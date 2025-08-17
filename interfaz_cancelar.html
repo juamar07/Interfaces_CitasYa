@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Re-agendar o Cancelar una cita</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: #eeeeee;
+  margin: 0;
+  padding: 20px;
+  color: #333;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  border-left: 4px solid #5c6bc0;
+}
+
+h1 {
+  color: #000;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+h2 {
+  color: #000;
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 20px;
+}
+
+label {
+  display: block;
+  margin: 10px 0;
+  color: #003366;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+input[type="text"], select, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 2px solid #dddddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+input[type="text"]:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #7da2a9;
+}
+
+/* Botón base */
+button {
+  display: block;
+  width: 100%;
+  margin: 20px 0;
+  background-color: #3f51b5;
+  color: white;
+  border: none;
+  padding: 15px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+button:hover {
+  background-color: #3f51b5;
+  transform: translateY(-2px);
+}
+
+/* Botón de acción (se actualizará su texto según la opción) */
+#boton_accion {
+  /* Los colores se mantienen por defecto, pero puedes ajustarlo si lo deseas */
+  background-color: #5c6bc0;
+}
+
+#detalle_accion {
+  background-color: #fafafa;
+  border: 2px solid #e0e0e0;
+  height: 100px;
+  resize: none;
+}
+
+.back-button {
+  display: inline-block;
+  margin-bottom: 20px;
+  text-decoration: none;
+  font-size: 16px;
+  color: #5c6bc0;
+  padding: 8px 12px;
+  border: 1px solid #5c6bc0;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.back-button:hover {
+  background-color: #5c6bc0;
+  color: #ffffff;
+}
+
+
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    padding: 10px;
+  }
+  h1 {
+    font-size: 20px;
+  }
+  label, button {
+    font-size: 14px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Re-agendar o Cancelar una cita</h1>
+  
+  <a href="interfaz_inicio_s.html" class="back-button">&larr; Volver</a>
+  <!-- Selección de acción -->
+  <label for="accion">Seleccione la acción:</label>
+  <select id="accion">
+    <option value="cancelar">Cancelar cita</option>
+    <option value="reagenda">Re-agendar cita</option>
+  </select>
+  
+  <!-- Sección de cancelación (siempre visible) -->
+  <div id="seccion_cancelar">
+    <h2>Datos de la cita a cancelar</h2>
+    <label for="nombre_cliente_cancelar">Ingrese su nombre completo</label>
+    <input type="text" id="nombre_cliente_cancelar" placeholder="Ej: Juan Martín Betancur Uribe">
+    
+    <label for="tipo_cita_cancelar">Ingrese tipo de cita</label>
+    <select id="tipo_cita_cancelar">
+      <option>Seleccione</option>
+      <option>Barbería</option>
+      <option>Manicure</option>
+    </select>
+    
+    <label for="nombre_servicio_cancelar">Nombre de la <span id="tipo_servicio_label_cancelar"></span></label>
+    <input type="text" id="nombre_servicio_cancelar" placeholder="Ej: Barbería 1">
+    
+    <label for="dia_cita_cancelar">Seleccione el día de la cita</label>
+    <select id="dia_cita_cancelar">
+      <option>Seleccione</option>
+      <option>Lunes</option>
+      <option>Martes</option>
+      <option>Miercoles</option>
+      <option>Jueves</option>
+      <option>Viernes</option>
+      <option>Sabado</option>
+    </select>
+    
+    <label for="hora_cita_cancelar">Seleccione la hora de la cita</label>
+    <select id="hora_cita_cancelar">
+      <option>Seleccione</option>
+      <option>8:00 AM</option>
+      <option>8:30 AM</option>
+      <option>9:00 AM</option>
+      <option>9:30 AM</option>
+      <option>10:00 AM</option>
+      <option>10:30 AM</option>
+      <option>11:00 AM</option>
+      <option>11:30 AM</option>
+      <option>2:00 PM</option>
+      <option>2:30 PM</option>
+      <option>3:00 PM</option>
+      <option>3:30 PM</option>
+      <option>4:00 PM</option>
+      <option>4:30 PM</option>
+      <option>5:00 PM</option>
+      <option>5:30 PM</option>
+      <option>6:00 PM</option>
+      <option>6:30 PM</option>
+    </select>
+  </div>
+  
+  <!-- Sección de re-agendado (inicialmente oculta) -->
+  <div id="seccion_reagenda" style="display:none;">
+    <h2>Datos para re-agendar la cita</h2>
+    <label for="barrio_cita_reagenda">Seleccione el barrio de la nueva cita</label>
+    <select id="barrio_cita_reagenda">
+      <option>Seleccione</option>
+      <option>Cable</option>
+      <option>Enea</option>
+      <option>Milan</option>
+      <option>Palermo</option>
+      <option>Estrella</option>
+    </select>
+    
+    <label for="nombre_servicio_reagenda">Nombre del servicio <span id="tipo_servicio_label_reagenda"></span></label>
+    <select id="nombre_servicio_reagenda">
+      <option>Seleccione</option>
+      <!-- Las opciones se llenarán dinámicamente -->
+    </select>
+    
+    <label for="dia_cita_reagenda">Seleccione el día de la nueva cita</label>
+    <select id="dia_cita_reagenda">
+      <option>Seleccione</option>
+      <option>Lunes</option>
+      <option>Martes</option>
+      <option>Miercoles</option>
+      <option>Jueves</option>
+      <option>Viernes</option>
+      <option>Sabado</option>
+    </select>
+    
+    <label for="hora_cita_reagenda">Seleccione la hora de la nueva cita</label>
+    <select id="hora_cita_reagenda">
+      <option>Seleccione</option>
+      <option>8:00 AM</option>
+      <option>8:30 AM</option>
+      <option>9:00 AM</option>
+      <option>9:30 AM</option>
+      <option>10:00 AM</option>
+      <option>10:30 AM</option>
+      <option>11:00 AM</option>
+      <option>11:30 AM</option>
+      <option>2:00 PM</option>
+      <option>2:30 PM</option>
+      <option>3:00 PM</option>
+      <option>3:30 PM</option>
+      <option>4:00 PM</option>
+      <option>4:30 PM</option>
+      <option>5:00 PM</option>
+      <option>5:30 PM</option>
+      <option>6:00 PM</option>
+      <option>6:30 PM</option>
+    </select>
+  </div>
+  
+  <!-- Botón de acción y resultado -->
+  <button id="boton_accion">Cancelar cita</button>
+  <h2 id="respuesta_accion"></h2>
+  <textarea id="detalle_accion" rows="4"></textarea>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var accionSelect = document.getElementById('accion');
+  var seccionReagenda = document.getElementById('seccion_reagenda');
+  var botonAccion = document.getElementById('boton_accion');
+  var respuestaAccion = document.getElementById('respuesta_accion');
+  var detalleAccion = document.getElementById('detalle_accion');
+
+  // Campos de la sección de cancelación
+  var nombreCompleto = document.getElementById('nombre_cliente_cancelar');
+  var tipoCitaCancelacion = document.getElementById('tipo_cita_cancelar');
+  var servicioLabelCancelacion = document.getElementById('tipo_servicio_label_cancelar');
+  var nombreServicioCancelacion = document.getElementById('nombre_servicio_cancelar');
+  var diaCitaCancelar = document.getElementById('dia_cita_cancelar');
+  var horaCitaCancelar = document.getElementById('hora_cita_cancelar');
+
+  // Campos de la sección de re-agendado
+  var barrioCitaReagenda = document.getElementById('barrio_cita_reagenda');
+  var nombreServicioReagenda = document.getElementById('nombre_servicio_reagenda');
+  var tipoServicioLabelReagenda = document.getElementById('tipo_servicio_label_reagenda');
+  var diaCitaReagenda = document.getElementById('dia_cita_reagenda');
+  var horaCitaReagenda = document.getElementById('hora_cita_reagenda');
+
+  // Actualizar etiqueta de servicio en la sección de cancelación y re-agenda según el tipo seleccionado
+  tipoCitaCancelacion.addEventListener('change', function() {
+    var tipo = tipoCitaCancelacion.value;
+    servicioLabelCancelacion.textContent = (tipo === 'Seleccione') ? '' : tipo;
+    tipoServicioLabelReagenda.textContent = (tipo === 'Seleccione') ? '' : tipo;
+    actualizarServiciosReagenda(barrioCitaReagenda.value, tipo);
+  });
+
+  // Actualizar opciones dinámicas de servicios en re-agenda cuando cambia el barrio
+  barrioCitaReagenda.addEventListener('change', function() {
+    actualizarServiciosReagenda(barrioCitaReagenda.value, tipoCitaCancelacion.value);
+  });
+
+  // Función para actualizar las opciones de servicio en re-agenda
+  function actualizarServiciosReagenda(barrio, tipo) {
+    var serviciosPorBarrio = {
+      'Cable': {'Barbería': ['Cable 1', 'Cable 2'], 'Manicure': ['Cable A', 'Cable B']},
+      'Enea': {'Barbería': ['Enea 1', 'Enea 2'], 'Manicure': ['Enea A', 'Enea B']},
+      'Milan': {'Barbería': ['Milan 1', 'Milan 2'], 'Manicure': ['Milan A', 'Milan B']},
+      'Palermo': {'Barbería': ['Palermo 1', 'Palermo 2'], 'Manicure': ['Palermo A', 'Palermo B']},
+      'Estrella': {'Barbería': ['Estrella 1', 'Estrella 2'], 'Manicure': ['Estrella A', 'Estrella B']}
+    };
+    nombreServicioReagenda.innerHTML = '';
+    var defaultOption = document.createElement('option');
+    defaultOption.value = 'Seleccione';
+    defaultOption.textContent = 'Seleccione';
+    nombreServicioReagenda.appendChild(defaultOption);
+    if (barrio !== 'Seleccione' && tipo !== 'Seleccione' && serviciosPorBarrio[barrio]) {
+      var servicios = serviciosPorBarrio[barrio][tipo];
+      servicios.forEach(function(servicio) {
+        var option = document.createElement('option');
+        option.value = servicio;
+        option.textContent = servicio;
+        nombreServicioReagenda.appendChild(option);
+      });
+    }
+  }
+
+  // Mostrar u ocultar la sección de re-agendado según la opción seleccionada
+  accionSelect.addEventListener('change', function() {
+    if (accionSelect.value === 'reagenda') {
+      seccionReagenda.style.display = 'block';
+      botonAccion.textContent = 'Re-agendar cita';
+    } else {
+      seccionReagenda.style.display = 'none';
+      botonAccion.textContent = 'Cancelar cita';
+    }
+  });
+
+  // Evento para el botón de acción
+  botonAccion.addEventListener('click', function(e) {
+    e.preventDefault();
+    var accion = accionSelect.value;
+    // Datos de la cita a cancelar
+    var nombre = nombreCompleto.value;
+    var tipo = tipoCitaCancelacion.options[tipoCitaCancelacion.selectedIndex].text;
+    var servicio = nombreServicioCancelacion.value;
+    var dia = diaCitaCancelar.options[diaCitaCancelar.selectedIndex].text;
+    var hora = horaCitaCancelar.options[horaCitaCancelar.selectedIndex].text;
+    var mensaje = "";
+    if (accion === 'cancelar') {
+      mensaje = nombre + ", su cita de " + tipo + " en " + servicio + " para el día " + dia + " a las " + hora + " ha sido cancelada.";
+      respuestaAccion.textContent = "Cita Cancelada";
+    } else if (accion === 'reagenda') {
+      // Datos de la nueva cita
+      var barrioReagenda = barrioCitaReagenda.options[barrioCitaReagenda.selectedIndex].text;
+      var servicioReagenda = nombreServicioReagenda.options[nombreServicioReagenda.selectedIndex].text;
+      var diaReagenda = diaCitaReagenda.options[diaCitaReagenda.selectedIndex].text;
+      var horaReagenda = horaCitaReagenda.options[horaCitaReagenda.selectedIndex].text;
+      mensaje = nombre + ", su cita de " + tipo + " en " + servicio + " para el día " + dia + " a las " + hora + " ha sido cancelada.\n";
+      mensaje += "Se ha re-agendado una nueva cita en " + barrioReagenda + ", servicio " + servicioReagenda + " para el día " + diaReagenda + " a las " + horaReagenda + ".";
+      respuestaAccion.textContent = "Cita Re-agendada";
+    }
+    detalleAccion.value = mensaje;
+  });
+});
+</script>
+
+</body>
+</html>

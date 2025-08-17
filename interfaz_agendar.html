@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Programación de Citas</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: #eeeeee;
+  margin: 0;
+  padding: 20px;
+  color: #333;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  border-left: 4px solid #5c6bc0;
+}
+
+/* Estilo base para los botones */
+button {
+  display: block;
+  width: 100%;
+  margin: 20px 0;
+  background-color: #5c6bc0;
+  color: white;
+  border: none;
+  padding: 15px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+button:hover {
+  background-color: #3f51b5;
+  transform: translateY(-2px);
+}
+
+/* Botón "Programar cita" en color verde */
+button#programar_cita {
+  background-color: #4CAF50;
+}
+button#programar_cita:hover {
+  background-color: #388E3C;
+}
+
+button#cancelar_cita {
+  background-color: #f44336;
+  margin-top: 10px;
+}
+button#cancelar_cita:hover {
+  background-color: #d32f2f;
+}
+
+.back-button {
+  display: inline-block;
+  margin-bottom: 20px;
+  text-decoration: none;
+  font-size: 16px;
+  color: #5c6bc0;
+  padding: 8px 12px;
+  border: 1px solid #5c6bc0;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+.back-button:hover {
+  background-color: #5c6bc0;
+  color: #ffffff;
+}
+
+h1 {
+  color: #000;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+label {
+  display: block;
+  margin: 10px 0;
+  color: #003366;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+input[type="text"], select, textarea,
+input[type="date"], input[type="time"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 2px solid #dddddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+  font-size: 16px;
+}
+
+input[type="text"]:focus, select:focus, textarea:focus,
+input[type="date"]:focus, input[type="time"]:focus {
+  outline: none;
+  border-color: #7da2a9;
+}
+
+/* Agrandar el ícono del calendario en navegadores WebKit */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  transform: scale(1.5);
+  filter: invert(30%);
+}
+
+/* Agrandar el ícono del reloj en navegadores WebKit */
+input[type="time"]::-webkit-calendar-picker-indicator {
+  transform: scale(1.5);
+  filter: invert(30%);
+}
+
+#detalle_cita {
+  background-color: #fafafa;
+  border: 2px solid #e0e0e0;
+  height: 100px;
+  resize: none;
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    padding: 10px;
+  }
+  
+  h1 {
+    font-size: 20px;
+  }
+  
+  label, button {
+    font-size: 14px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Programación de Citas</h1>
+  
+  <a href="interfaz_inicio_s.html" class="back-button">&larr; Volver</a>
+  
+  <form id="formulario_citas"></form>
+  
+  <label for="nombre_completo">Ingrese su nombre completo</label>
+  <input type="text" id="nombre_completo" placeholder="Ej: Juan Martín Betancur Uribe">
+  
+  <label for="tipo_cita">Seleccione tipo de cita para agendar</label>
+  <select id="tipo_cita">
+    <option>Seleccione</option>
+    <option>Barbería</option>
+    <option>Manicure</option>
+  </select>
+  
+  <label for="barrio_cita">Seleccione el barrio de la cita</label>
+  <select id="barrio_cita">
+    <option>Seleccione</option>
+    <option>Cable</option>
+    <option>Enea</option>
+    <option>Milan</option>
+    <option>Palermo</option>
+    <option>Estrella</option>
+  </select>
+  
+  <label for="nombre_servicio">Nombre de la <span id="tipo_servicio_label"></span></label>
+  <select id="nombre_servicio">
+    <option>Seleccione</option>
+    <!-- Las opciones se llenarán dinámicamente basándose en el barrio -->
+  </select>
+
+  <!-- Reemplazamos el select de día por el input tipo date -->
+  <label for="fecha_cita">Seleccione la fecha de la cita</label>
+  <input type="date" id="fecha_cita">
+  <p id="dia_semana"></p>
+  
+  <!-- Reemplazamos el select de hora por el input tipo time con bloques de 10 min -->
+  <label for="hora_cita">Seleccione la hora que desea la cita</label>
+  <input type="time" id="hora_cita" step="600">
+  <p id="hora_seleccionada"></p>
+  
+  <button id="programar_cita">Programar cita</button>
+  <h2 id="respuesta_cita"></h2>
+  <textarea id="detalle_cita" rows="4"></textarea>
+  <button id="programar_otra_cita">Programar otra cita</button>
+
+  <!-- Botón "Iniciar sesión" eliminado -->
+  
+  <button type="button" id="cancelar_cita">Cancelar una cita</button>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var botonProgramar = document.getElementById('programar_cita');
+  var botonProgramarOtra = document.getElementById('programar_otra_cita');
+  var detalleCita = document.getElementById('detalle_cita');
+  var nombreCompleto = document.getElementById('nombre_completo');
+  var tipoCita = document.getElementById('tipo_cita');
+  var barrioCita = document.getElementById('barrio_cita');
+  var nombreServicio = document.getElementById('nombre_servicio');
+  var tipoServicioLabel = document.getElementById('tipo_servicio_label');
+  
+  // Nuevos campos para fecha y hora
+  var fechaCita = document.getElementById('fecha_cita');
+  var diaSemanaP = document.getElementById('dia_semana');
+  var horaCita = document.getElementById('hora_cita');
+  var horaSeleccionadaP = document.getElementById('hora_seleccionada');
+
+  // Actualizar día de la semana cuando se selecciona la fecha
+  fechaCita.addEventListener("change", function() {
+    if(this.value !== "") {
+      var parts = this.value.split("-");
+      var year = parseInt(parts[0], 10);
+      var month = parseInt(parts[1], 10) - 1;
+      var day = parseInt(parts[2], 10);
+      var fechaSeleccionada = new Date(year, month, day);
+      var dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+      var dia = dias[fechaSeleccionada.getDay()];
+      diaSemanaP.textContent = "El día seleccionado es: " + dia;
+    } else {
+      diaSemanaP.textContent = "";
+    }
+  });
+
+  // Actualizar hora seleccionada cuando se elige la hora
+  horaCita.addEventListener("change", function() {
+    if(this.value !== "") {
+      horaSeleccionadaP.textContent = "La hora seleccionada es: " + this.value;
+    } else {
+      horaSeleccionadaP.textContent = "";
+    }
+  });
+  
+  // Actualizar la etiqueta del servicio según el tipo de cita seleccionado
+  tipoCita.addEventListener('change', function() {
+    tipoServicioLabel.textContent = tipoCita.value === 'Seleccione' ? ' ' : tipoCita.value;
+    actualizarServicios(barrioCita.value, tipoCita.value);
+  });
+  
+  barrioCita.addEventListener('change', function() {
+    actualizarServicios(barrioCita.value, tipoCita.value);
+  });
+  
+  function actualizarServicios(barrio, tipo) {
+    var serviciosPorBarrio = {
+      'Cable': {'Barbería': ['Cable 1', 'Cable 2'], 'Manicure': ['Cable A', 'Cable B']},
+      'Enea': {'Barbería': ['Enea 1', 'Enea 2'], 'Manicure': ['Enea A', 'Enea B']},
+      'Milan': {'Barbería': ['Milan 1', 'Milan 2'], 'Manicure': ['Milan A', 'Milan B']},
+      'Palermo': {'Barbería': ['Palermo 1', 'Palermo 2'], 'Manicure': ['Palermo A', 'Palermo B']},
+      'Estrella': {'Barbería': ['Estrella 1', 'Estrella 2'], 'Manicure': ['Estrella A', 'Estrella B']}
+    };
+
+    nombreServicio.innerHTML = ''; // Limpiar las opciones antiguas
+    var defaultOption = document.createElement('option');
+    defaultOption.value = 'Seleccione';
+    defaultOption.textContent = 'Seleccione';
+    nombreServicio.appendChild(defaultOption);
+
+    if (barrio !== 'Seleccione' && tipo !== 'Seleccione' && serviciosPorBarrio[barrio]) {
+      var servicios = serviciosPorBarrio[barrio][tipo];
+      servicios.forEach(function(servicio) {
+        var option = document.createElement('option');
+        option.value = servicio;
+        option.textContent = servicio;
+        nombreServicio.appendChild(option);
+      });
+    }
+  }
+  
+  botonProgramar.addEventListener('click', function() {
+    var nombre = nombreCompleto.value;
+    var tipo = tipoCita.options[tipoCita.selectedIndex].text;
+    var barrio = barrioCita.options[barrioCita.selectedIndex].text;
+    // Obtenemos la fecha y la formateamos junto con el día de la semana
+    var fechaValue = fechaCita.value;
+    var diaTexto = diaSemanaP.textContent; // "El día seleccionado es: X"
+    // Obtenemos la hora del input time
+    var hora = horaCita.value;
+    var horaTexto = horaSeleccionadaP.textContent; // "La hora seleccionada es: HH:MM"
+    var servicio = nombreServicio.options[nombreServicio.selectedIndex].text;
+    
+    // Se construye el mensaje con la fecha y hora
+    detalleCita.value = nombre + ", usted ha programado una cita de " + tipo +
+      " en " + servicio + ", barrio " + barrio + 
+      ", para el " + (fechaValue ? fechaValue + " (" + diaTexto.replace("El día seleccionado es: ", "") + ")" : "fecha no seleccionada") +
+      " a las " + (hora ? hora : "hora no seleccionada") + ".";
+  });
+  
+  botonProgramarOtra.addEventListener('click', function() {
+    nombreCompleto.value = ''; // Limpiar el campo de texto del nombre
+    tipoCita.selectedIndex = 0;
+    barrioCita.selectedIndex = 0;
+    // Limpiar campos de fecha y hora
+    fechaCita.value = "";
+    diaSemanaP.textContent = "";
+    horaCita.value = "";
+    horaSeleccionadaP.textContent = "";
+    nombreServicio.innerHTML = '<option>Seleccione</option>';
+    detalleCita.value = '';
+    tipoServicioLabel.textContent = '---';
+  });
+  
+  // Evento para el botón "Cancelar una cita"
+  document.getElementById('cancelar_cita').addEventListener('click', function() {
+    window.location.href = 'interfaz_cancelar.html';
+  });
+});
+</script>
+
+</body>
+</html>

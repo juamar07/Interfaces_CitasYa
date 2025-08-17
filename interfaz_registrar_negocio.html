@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registrar Negocio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background-color: #eeeeee;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      background-color: #ffffff;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      border-radius: 10px;
+      border-left: 4px solid #5c6bc0;
+    }
+    
+    h1 {
+      text-align: center;
+      color: #000;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin: 10px 0;
+      color: #003366;
+      font-size: 16px;
+      font-weight: 400;
+    }
+    
+    input[type="text"], select, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 2px solid #dddddd;
+      border-radius: 5px;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+    
+    input[type="text"]:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #7da2a9;
+    }
+    
+    .back-button {
+      display: inline-block;
+      margin-bottom: 20px;
+      text-decoration: none;
+      font-size: 16px;
+      color: #5c6bc0;
+      padding: 8px 12px;
+      border: 1px solid #5c6bc0;
+      border-radius: 5px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    
+    .back-button:hover {
+      background-color: #5c6bc0;
+      color: #ffffff;
+    }
+    
+    /* Botón Registrarse en verde */
+    .btn-registrarse {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 15px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s, transform 0.3s;
+      width: 100%;
+      margin: 20px 0;
+    }
+    
+    .btn-registrarse:hover {
+      background-color: #388E3C;
+      transform: translateY(-2px);
+    }
+    
+    /* Botón Continuar en azul */
+    .btn-continuar {
+      background-color: #5c6bc0;
+      color: white;
+      border: none;
+      padding: 15px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s, transform 0.3s;
+      width: 100%;
+      margin: 20px 0;
+      display: none; /* Inicialmente oculto */
+    }
+    
+    .btn-continuar:hover {
+      background-color: #3f51b5;
+      transform: translateY(-2px);
+    }
+    
+    #detalle_registro {
+      background-color: #fafafa;
+      border: 2px solid #e0e0e0;
+      height: 100px;
+      resize: none;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        width: 100%;
+        padding: 10px;
+      }
+      h1 {
+        font-size: 20px;
+      }
+      label, button {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Botón de Volver -->
+    <a href="interfaz_inicio_s.html" class="back-button">&larr; Volver</a>
+    
+    <h1>Registrar Negocio</h1>
+    
+    <!-- Nombre del negocio -->
+    <label for="nombre_negocio">Nombre de la barbería o peluquería</label>
+    <input type="text" id="nombre_negocio" placeholder="Ej: Barbería XYZ">
+    
+    <!-- Cantidad de barberos -->
+    <label for="cantidad_barberos">Cantidad de barberos o peluqueros</label>
+    <select id="cantidad_barberos">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+    
+    <!-- Contenedor para nombres de barberos -->
+    <div id="nombres_barberos">
+      <label for="barbero_1">Nombre del barbero o peluquero</label>
+      <input type="text" id="barbero_1" placeholder="Ej: Juan Pérez">
+    </div>
+    
+    <!-- Lugar de la barbería -->
+    <label for="lugar_negocio">Lugar de la barbería</label>
+    <select id="lugar_negocio">
+      <option>Seleccione</option>
+      <option>Cable</option>
+      <option>Enea</option>
+      <option>Milan</option>
+      <option>Palermo</option>
+      <option>Estrella</option>
+    </select>
+    
+    <!-- Servicios y precios -->
+    <h2>Servicios que ofrecen</h2>
+    <label for="precio_corte">Corte</label>
+    <input type="text" id="precio_corte" placeholder="Precio del corte">
+    
+    <label for="precio_corte_barba">Corte y Barba</label>
+    <input type="text" id="precio_corte_barba" placeholder="Precio del corte y barba">
+    
+    <label for="precio_barba">Barba</label>
+    <input type="text" id="precio_barba" placeholder="Precio de la barba">
+    
+    <label for="precio_tinte">Tinte de Pelo</label>
+    <input type="text" id="precio_tinte" placeholder="Precio del tinte de pelo">
+    
+    <!-- Notas adicionales -->
+    <label for="notas_adicionales">Notas adicionales</label>
+    <textarea id="notas_adicionales" rows="4" placeholder="Información adicional..."></textarea>
+    
+    <!-- Botón Registrarse -->
+    <button id="boton_registrarse" class="btn-registrarse">Registrarse</button>
+    
+    <!-- Área para mostrar el resumen del registro -->
+    <textarea id="detalle_registro" rows="4" readonly style="display:none;"></textarea>
+    
+    <!-- Botón Continuar -->
+    <button id="boton_continuar" class="btn-continuar">Continuar</button>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var cantidadBarberosSelect = document.getElementById('cantidad_barberos');
+      var nombresBarberosDiv = document.getElementById('nombres_barberos');
+      
+      // Función para actualizar los campos de nombres de barberos
+      function actualizarCamposBarberos() {
+        var cantidad = parseInt(cantidadBarberosSelect.value);
+        nombresBarberosDiv.innerHTML = ""; // Limpiar contenedor
+        for (var i = 1; i <= cantidad; i++) {
+          var label = document.createElement('label');
+          label.setAttribute('for', 'barbero_' + i);
+          label.textContent = (cantidad > 1) ? "Nombre del barbero " + i : "Nombre del barbero o peluquero";
+          var input = document.createElement('input');
+          input.type = "text";
+          input.id = 'barbero_' + i;
+          input.placeholder = "Ej: Nombre del barbero " + i;
+          nombresBarberosDiv.appendChild(label);
+          nombresBarberosDiv.appendChild(input);
+        }
+      }
+      
+      // Actualizar campos al cambiar la cantidad
+      cantidadBarberosSelect.addEventListener('change', actualizarCamposBarberos);
+      
+      // Inicializar los campos de nombres
+      actualizarCamposBarberos();
+      
+      // Evento para el botón "Registrarse"
+      document.getElementById('boton_registrarse').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Recopilar datos del negocio
+        var nombreNegocio = document.getElementById('nombre_negocio').value;
+        var cantidad = cantidadBarberosSelect.value;
+        var barberos = [];
+        for (var i = 1; i <= cantidad; i++) {
+          var nombreBarbero = document.getElementById('barbero_' + i).value;
+          barberos.push(nombreBarbero);
+        }
+        var lugarNegocio = document.getElementById('lugar_negocio').value;
+        var precioCorte = document.getElementById('precio_corte').value;
+        var precioCorteBarba = document.getElementById('precio_corte_barba').value;
+        var precioBarba = document.getElementById('precio_barba').value;
+        var precioTinte = document.getElementById('precio_tinte').value;
+        var notas = document.getElementById('notas_adicionales').value;
+        
+        // Construir un mensaje resumen
+        var mensaje = "Negocio: " + nombreNegocio + "\n";
+        mensaje += "Cantidad de barberos: " + cantidad + "\n";
+        mensaje += "Nombres: " + barberos.join(", ") + "\n";
+        mensaje += "Lugar: " + lugarNegocio + "\n";
+        mensaje += "Servicios:\n";
+        mensaje += " - Corte: " + precioCorte + "\n";
+        mensaje += " - Corte y Barba: " + precioCorteBarba + "\n";
+        mensaje += " - Barba: " + precioBarba + "\n";
+        mensaje += " - Tinte de Pelo: " + precioTinte + "\n";
+        mensaje += "Notas adicionales: " + notas;
+        
+        // Mostrar el resumen en el textarea y revelar el botón Continuar
+        var detalleRegistro = document.getElementById('detalle_registro');
+        detalleRegistro.value = mensaje;
+        detalleRegistro.style.display = "block";
+        document.getElementById('boton_continuar').style.display = "block";
+      });
+      
+      // Evento para el botón Continuar
+      document.getElementById('boton_continuar').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'interfaz_organizar_agenda.html';
+      });
+    });
+  </script>
+</body>
+</html>

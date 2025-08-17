@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Inicio de Sesión</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background-color: #eeeeee;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      background-color: #ffffff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      border-radius: 10px;
+      border-left: 4px solid #5c6bc0;
+    }
+    header {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    header img {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 60px;
+      height: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #000;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 16px;
+      margin: 10px 0;
+      color: #003366;
+      font-weight: 400;
+    }
+    button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      border: none;
+      padding: 15px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s, transform 0.3s;
+      color: white;
+      font-size: 16px;
+    }
+    /* Botones de Iniciar Sesión (azul) */
+    .btn-inicio {
+      background-color: #5c6bc0; /* Azul principal */
+    }
+    .btn-inicio:hover {
+      background-color: #3f51b5; /* Azul más oscuro */
+      transform: translateY(-2px);
+    }
+    /* Botones de Registrarse (verde claro) */
+    .btn-registrar {
+      background-color: #66BB6A; /* Verde claro */
+    }
+    .btn-registrar:hover {
+      background-color: #57A05D; /* Verde un poco más oscuro */
+      transform: translateY(-2px);
+    }
+    footer {
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+      margin-top: 20px;
+    }
+    @media (max-width: 768px) {
+      .container {
+        width: 100%;
+        padding: 10px;
+      }
+      h1 {
+        font-size: 20px;
+      }
+      p, button {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <img src="LogoCitasYa.png" alt="Logo Citas Ya">
+    <h1>Inicio de Sesión</h1>
+  </header>
+
+  <section>
+    <p>Como Cliente</p>
+    <button id="cliente_inicio" class="btn-inicio">Iniciar Sesión</button>
+    <button id="cliente_registrar" class="btn-registrar">Registrarse</button>
+  </section>
+
+  <section>
+    <p>Como Barbero o Peluquero(a)</p>
+    <button id="barbero_inicio" class="btn-inicio">Iniciar Sesión</button>
+    <button id="barbero_registrar" class="btn-registrar">Registrarse</button>
+  </section>
+
+  <footer>
+    <p>
+      Citas Ya es tu plataforma para agendar y administrar citas de forma rápida y sencilla. 
+      Si eres cliente, podrás reservar tu próximo servicio en pocos pasos. 
+      Si eres barbero o peluquero(a), aquí podrás llevar el control de tu agenda de manera eficiente. 
+      ¡Gracias por elegirnos para facilitar tu experiencia!
+    </p>
+  </footer>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Botones para clientes: redirigen a la interfaz para agendar una cita
+  document.getElementById('cliente_inicio').addEventListener('click', function(){
+    window.location.href = 'interfaz_agendar.html';
+  });
+  document.getElementById('cliente_registrar').addEventListener('click', function(){
+    window.location.href = 'interfaz_agendar.html';
+  });
+
+  // Botones para barberos/peluqueros: redirigen a la interfaz para organizar la agenda
+  document.getElementById('barbero_inicio').addEventListener('click', function(){
+    window.location.href = 'interfaz_organizar_agenda.html';
+  });
+  document.getElementById('barbero_registrar').addEventListener('click', function(){
+    window.location.href = 'interfaz_registrar_negocio.html';
+  });
+});
+</script>
+
+</body>
+</html>
