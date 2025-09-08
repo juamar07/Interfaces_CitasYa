@@ -5,270 +5,665 @@
   <title>Registrar Negocio</title>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Open Sans', sans-serif;
-      background-color: #eeeeee;
-      margin: 0;
-      padding: 20px;
-      color: #333;
-    }
-    
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-      background-color: #ffffff;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-      border-radius: 10px;
-      border-left: 4px solid #5c6bc0;
-    }
-    
-    h1 {
-      text-align: center;
-      color: #000;
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 20px;
-    }
-    
-    label {
-      display: block;
-      margin: 10px 0;
-      color: #003366;
-      font-size: 16px;
-      font-weight: 400;
-    }
-    
-    input[type="text"], select, textarea {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 20px;
-      border: 2px solid #dddddd;
-      border-radius: 5px;
-      box-sizing: border-box;
-      transition: border-color 0.3s;
-    }
-    
-    input[type="text"]:focus, select:focus, textarea:focus {
-      outline: none;
-      border-color: #7da2a9;
-    }
-    
-    .back-button {
-      display: inline-block;
-      margin-bottom: 20px;
-      text-decoration: none;
-      font-size: 16px;
-      color: #5c6bc0;
-      padding: 8px 12px;
-      border: 1px solid #5c6bc0;
-      border-radius: 5px;
-      transition: background-color 0.3s, color 0.3s;
-    }
-    
-    .back-button:hover {
-      background-color: #5c6bc0;
-      color: #ffffff;
-    }
-    
-    /* Botón Registrarse en verde */
-    .btn-registrarse {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      padding: 15px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background-color 0.3s, transform 0.3s;
-      width: 100%;
-      margin: 20px 0;
-    }
-    
-    .btn-registrarse:hover {
-      background-color: #388E3C;
-      transform: translateY(-2px);
-    }
-    
-    /* Botón Continuar en azul */
-    .btn-continuar {
-      background-color: #5c6bc0;
-      color: white;
-      border: none;
-      padding: 15px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background-color 0.3s, transform 0.3s;
-      width: 100%;
-      margin: 20px 0;
-      display: none; /* Inicialmente oculto */
-    }
-    
-    .btn-continuar:hover {
-      background-color: #3f51b5;
-      transform: translateY(-2px);
-    }
-    
-    #detalle_registro {
-      background-color: #fafafa;
-      border: 2px solid #e0e0e0;
-      height: 100px;
-      resize: none;
-    }
-    
-    @media (max-width: 768px) {
-      .container {
-        width: 100%;
-        padding: 10px;
-      }
-      h1 {
-        font-size: 20px;
-      }
-      label, button {
-        font-size: 14px;
-      }
-    }
+/* ===== Variables (ajustadas a esta interfaz) ===== */
+:root{
+  --container-w: 920px;   /* coincide con el max-width del card de esta página */
+  --container-pad: 20px;
+  --container-bl: 4px;
+
+  --banner-h: 64px;
+  --page-sidepad: 16px;
+  --banner-bg: #e6e9ee;   /* gris nardo */
+  --banner-bg-hover: #d7dbe3;
+}
+
+/* ===== Base ===== */
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: #eeeeee;
+  margin: 0;
+  padding: 20px;
+  color: #333;
+  padding-top: calc(var(--banner-h) + 8px); /* espacio para banner fijo */
+}
+.container {
+  position: relative;
+  max-width: var(--container-w);
+  margin: auto;
+  padding: var(--container-pad);
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  border-radius: 10px;
+  border-left: var(--container-bl) solid #5c6bc0; /* morado principal del proyecto */
+}
+h1, h2 {
+  text-align: center;
+  color: #000;
+  font-weight: 600;
+  margin: 20px 0;
+}
+label {
+  display: block;
+  margin: 10px 0 4px;
+  color: #003366;
+  font-size: 16px;
+}
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #dddddd;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+input:focus, select:focus {
+  outline: none;
+  border-color: #7da2a9;
+}
+
+/* ===== Botones ===== */
+.btn{
+  display: block;                 /* ← necesario para poder centrar con margin auto */
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s, transform 0.2s;
+  padding: 12px 20px;
+  border-radius: 5px;
+  width: 100%;
+  margin: 10px 0;
+  font-size: 16px;
+  color: #fff;
+}
+.btn:hover{ transform: translateY(-1px); }
+
+/* Tamaño reducido (~75% del card), centrado */
+.btn-slim{
+  width: min(640px, 75%);
+  margin: 12px auto;              /* ← centra horizontalmente */
+}
+
+/* Colores consistentes */
+.btn-blue{ background-color:#5c6bc0; }
+.btn-blue:hover{ background-color:#3f51b5; }
+
+.btn-green{ background-color:#66bb6a; }
+.btn-green:hover{ background-color:#43a047; }
+
+.btn-red{ background-color:#ef5350; }
+.btn-red:hover{ background-color:#e53935; }
+
+/* Botones pequeños (acciones en filas) */
+.btn-icon{
+  display:inline-block;
+  padding: 4px 8px;
+  margin-right: 4px;
+  border-radius: 4px;
+  font-size: 14px;
+  width:auto;
+}
+.btn-icon-blue{ background:#5c6bc0; color:#fff; }
+.btn-icon-blue:hover{ background:#3f51b5; }
+.btn-icon-red{ background:#ef5350; color:#fff; }
+.btn-icon-red:hover{ background:#e53935; }
+
+/* Tamaño reducido (~75% del card), centrado */
+.btn-slim{
+  width: min(640px, 75%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Forzar que “Agregar” se mantenga azul (sin tocar HTML) */
+#addService.btn,
+#addStaff.btn{
+  background-color:#5c6bc0 !important;
+}
+#addService.btn:hover,
+#addStaff.btn:hover{
+  background-color:#3f51b5 !important;
+}
+
+/* ===== TABLAS / TEXTOS AUX ===== */
+table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+th, td { padding: 8px; text-align: left; }
+th { background-color: #f5f5f5; color: #555; font-weight: 600; }
+.token-preview { color: #666; font-size: 14px; }
+.error { display: block; color: #d32f2f; font-size: 14px; }
+small { display: block; color: #555; }
+
+/* ===== Banner fijo (mismo ancho que el card) ===== */
+.app-banner{
+  position: fixed; top: 0; left: 0; right: 0; height: var(--banner-h);
+  z-index: 9999; background: transparent;
+}
+.app-banner .banner-box{
+  height: 100%;
+  width: min(calc(var(--container-w) + var(--container-pad)*2 + var(--container-bl)),
+             calc(100% - var(--page-sidepad)*2));
+  margin: 0 auto;
+  background: var(--banner-bg);
+  border-bottom: 1px solid rgba(0,0,0,.06);
+  border-radius: 10px;
+  transition: background-color .2s ease;
+  display: flex; align-items: center;
+}
+.app-banner .banner-box:hover,
+.app-banner .banner-box:focus-within{ background: var(--banner-bg-hover); }
+.app-banner .banner-inner{
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  gap: 8px; width: 100%; padding: 0 12px;
+}
+.banner-back{ justify-self: start; }
+.banner-title{ justify-self: center; font-weight: 700; color: #233247; }
+.banner-logo{ justify-self: end; display: inline-flex; align-items: center; }
+.banner-logo img{ width: 52px; height: auto; display: block; }
+
+/* Botón volver del banner */
+.back-button{
+  display:inline-block; text-decoration:none; font-size:14px; color:#5c6bc0;
+  padding:8px 12px; border:1px solid #5c6bc0; border-radius:6px;
+  transition: background-color .2s, color .2s;
+}
+.back-button:hover{ background:#5c6bc0; color:#fff; }
+
+/* ===== Legal fuera del card ===== */
+.legal-outside{
+  margin: 18px auto 24px;
+  padding: 10px 12px;
+  max-width: calc(var(--container-w) + var(--container-pad)*2 + var(--container-bl));
+  text-align: center; color: #666; font-size: 14px; line-height: 1.35;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  h1 { font-size: 22px; }
+  h2 { font-size: 18px; }
+  label, button { font-size: 14px; }
+  .btn-slim{ width: 100%; }
+}
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Botón de Volver -->
-    <a href="interfaz_inicio_s.html" class="back-button">&larr; Volver</a>
-    
-    <h1>Registrar Negocio</h1>
-    
-    <!-- Nombre del negocio -->
-    <label for="nombre_negocio">Nombre de la barbería o peluquería</label>
-    <input type="text" id="nombre_negocio" placeholder="Ej: Barbería XYZ">
-    
-    <!-- Cantidad de barberos -->
-    <label for="cantidad_barberos">Cantidad de barberos o peluqueros</label>
-    <select id="cantidad_barberos">
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-    </select>
-    
-    <!-- Contenedor para nombres de barberos -->
-    <div id="nombres_barberos">
-      <label for="barbero_1">Nombre del barbero o peluquero</label>
-      <input type="text" id="barbero_1" placeholder="Ej: Juan Pérez">
+
+<!-- ===== Banner superior ===== -->
+<header class="app-banner" role="banner">
+  <div class="banner-box">
+    <div class="banner-inner">
+      <a href="#" class="back-button banner-back" onclick="history.back(); return false;">&larr; Volver</a>
+      <div class="banner-title">Registrar negocio</div>
+      <a href="interfaz_inicio_s.html" class="banner-logo" aria-label="Ir al inicio">
+        <img src="LogoCitasYa.png" alt="Citas Ya">
+      </a>
     </div>
-    
-    <!-- Lugar de la barbería -->
-    <label for="lugar_negocio">Lugar de la barbería</label>
-    <select id="lugar_negocio">
-      <option>Seleccione</option>
-      <option>Cable</option>
-      <option>Enea</option>
-      <option>Milan</option>
-      <option>Palermo</option>
-      <option>Estrella</option>
-    </select>
-    
-    <!-- Servicios y precios -->
-    <h2>Servicios que ofrecen</h2>
-    <label for="precio_corte">Corte</label>
-    <input type="text" id="precio_corte" placeholder="Precio del corte">
-    
-    <label for="precio_corte_barba">Corte y Barba</label>
-    <input type="text" id="precio_corte_barba" placeholder="Precio del corte y barba">
-    
-    <label for="precio_barba">Barba</label>
-    <input type="text" id="precio_barba" placeholder="Precio de la barba">
-    
-    <label for="precio_tinte">Tinte de Pelo</label>
-    <input type="text" id="precio_tinte" placeholder="Precio del tinte de pelo">
-    
-    <!-- Notas adicionales -->
-    <label for="notas_adicionales">Notas adicionales</label>
-    <textarea id="notas_adicionales" rows="4" placeholder="Información adicional..."></textarea>
-    
-    <!-- Botón Registrarse -->
-    <button id="boton_registrarse" class="btn-registrarse">Registrarse</button>
-    
-    <!-- Área para mostrar el resumen del registro -->
-    <textarea id="detalle_registro" rows="4" readonly style="display:none;"></textarea>
-    
-    <!-- Botón Continuar -->
-    <button id="boton_continuar" class="btn-continuar">Continuar</button>
   </div>
-  
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var cantidadBarberosSelect = document.getElementById('cantidad_barberos');
-      var nombresBarberosDiv = document.getElementById('nombres_barberos');
-      
-      // Función para actualizar los campos de nombres de barberos
-      function actualizarCamposBarberos() {
-        var cantidad = parseInt(cantidadBarberosSelect.value);
-        nombresBarberosDiv.innerHTML = ""; // Limpiar contenedor
-        for (var i = 1; i <= cantidad; i++) {
-          var label = document.createElement('label');
-          label.setAttribute('for', 'barbero_' + i);
-          label.textContent = (cantidad > 1) ? "Nombre del barbero " + i : "Nombre del barbero o peluquero";
-          var input = document.createElement('input');
-          input.type = "text";
-          input.id = 'barbero_' + i;
-          input.placeholder = "Ej: Nombre del barbero " + i;
-          nombresBarberosDiv.appendChild(label);
-          nombresBarberosDiv.appendChild(input);
-        }
+</header>
+
+<div class="container">
+  <h1>Registrar Negocio</h1>
+
+  <!-- Sección Datos del negocio -->
+  <section id="datos-negocio">
+    <h2>Datos del negocio</h2>
+    <label for="shopName">Nombre de la barbería/peluquería</label>
+    <input type="text" id="shopName" aria-required="true">
+    <span class="error" id="error-shopName"></span>
+
+    <label for="shopAddress">Dirección</label>
+    <input type="text" id="shopAddress" list="addressList" autocomplete="off" aria-required="true">
+    <datalist id="addressList">
+      <option value="Carrera 23 #60-36">
+      <option value="Calle 50 #25-30">
+      <option value="Avenida 19 #45-10">
+    </datalist>
+    <input type="hidden" id="shopLat">
+    <input type="hidden" id="shopLng">
+    <small id="addressPreview"></small>
+    <span class="error" id="error-shopAddress"></span>
+  </section>
+
+  <!-- Sección Datos del responsable -->
+  <section id="datos-responsable">
+    <h2>Datos del responsable</h2>
+    <label for="ownerName">Nombre completo</label>
+    <input type="text" id="ownerName" aria-required="true">
+    <span class="error" id="error-ownerName"></span>
+
+    <label for="ownerEmail">Correo</label>
+    <input type="email" id="ownerEmail" aria-required="true">
+    <span class="error" id="error-ownerEmail"></span>
+
+    <label for="ownerPhone">Teléfono</label>
+    <input type="tel" id="ownerPhone" aria-required="true" placeholder="Ej: 3001234567">
+    <span class="error" id="error-ownerPhone"></span>
+
+    <label for="ownerPass">Contraseña <small>(mínimo 6 caracteres)</small></label>
+    <input type="password" id="ownerPass" aria-required="true">
+    <span class="error" id="error-ownerPass"></span>
+  </section>
+
+  <!-- Sección Servicios -->
+  <section id="datos-servicios">
+    <h2>Servicios del establecimiento</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Servicio</th>
+          <th>Duración (min)</th>
+          <th>Precio (COP)</th>
+          <th>Tokens</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="servicesBody"></tbody>
+    </table>
+    <button type="button" id="addService" class="btn btn-blue btn-slim">Agregar servicio (+)</button>
+    <span class="error" id="error-services"></span>
+  </section>
+
+  <!-- Sección Personal -->
+  <section id="datos-personal">
+    <h2>Personal del establecimiento</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Personal</th>
+          <th>Servicios que ofrece</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="staffBody"></tbody>
+    </table>
+    <button type="button" id="addStaff" class="btn btn-blue btn-slim">Agregar personal (+)</button>
+    <span class="error" id="error-staff"></span>
+  </section>
+
+  <!-- Enviar -->
+  <section id="datos-submit">
+    <button type="button" id="submitForm" class="btn btn-green btn-slim">Guardar y continuar</button>
+  </section>
+
+  <!-- Resumen -->
+  <section id="datos-resumen" style="display:none;">
+    <h2>Resumen</h2>
+    <pre id="summaryText"></pre>
+  </section>
+
+  <!-- Registrar (final) -->
+  <section id="registro-final" style="display:none;">
+    <button type="button" id="registerBusiness" class="btn btn-green btn-slim">Registrar negocio</button>
+  </section>
+</div>
+
+<!-- ===== Legal fuera del card ===== -->
+<div class="legal-outside">
+  Todos los derechos reservados © 2025<br>
+  Citas Ya S.A.S - Nit 810.000.000-0
+</div>
+
+<script>
+/* ========= Utilidades ========= */
+// Formato COP -> "18.000"
+const fmtCOP = (n) => {
+  const num = Number(n);
+  if (!Number.isFinite(num)) return '';
+  return num.toLocaleString('es-CO');
+};
+// Debounce
+function debounce(fn, delay) { let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), delay); }; }
+// Parsear COP (acepta 18.000 / 18,000 / 18000)
+function parseCOPInput(str){ if (str===''||str==null) return ''; const d=String(str).replace(/[^\d]/g,''); return d?Number(d):''; }
+function formatCOPInput(inputEl, value){ inputEl.value = value === '' ? '' : fmtCOP(value); }
+// Tokens: 1 por cada 30 min (redondeo hacia arriba, mínimo 1)
+function computeTokens(mins){ return Math.max(1, Math.ceil(mins/30)); }
+function approxTokens(mins){ const t=computeTokens(mins); return `≈ ${t} token${t>1?'s':''}`; }
+
+/* ========= Dirección / ubicación ========= */
+const shopAddress = document.getElementById('shopAddress');
+const shopLat = document.getElementById('shopLat');
+const shopLng = document.getElementById('shopLng');
+const addressPreview = document.getElementById('addressPreview');
+function updateAddressPreview(){ addressPreview.textContent = shopAddress.value ? `Dirección: ${shopAddress.value}` : ''; }
+if (shopAddress) {
+  shopAddress.addEventListener('input', ()=>{ updateAddressPreview(); debouncedSave(); });
+  // Autocompletado (si está disponible)
+  if (window.google && google.maps && google.maps.places) {
+    const autocomplete = new google.maps.places.Autocomplete(shopAddress);
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace();
+      shopAddress.value = place.formatted_address || place.name || '';
+      updateAddressPreview();
+      if (place.geometry && place.geometry.location) {
+        shopLat.value = place.geometry.location.lat();
+        shopLng.value = place.geometry.location.lng();
       }
-      
-      // Actualizar campos al cambiar la cantidad
-      cantidadBarberosSelect.addEventListener('change', actualizarCamposBarberos);
-      
-      // Inicializar los campos de nombres
-      actualizarCamposBarberos();
-      
-      // Evento para el botón "Registrarse"
-      document.getElementById('boton_registrarse').addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Recopilar datos del negocio
-        var nombreNegocio = document.getElementById('nombre_negocio').value;
-        var cantidad = cantidadBarberosSelect.value;
-        var barberos = [];
-        for (var i = 1; i <= cantidad; i++) {
-          var nombreBarbero = document.getElementById('barbero_' + i).value;
-          barberos.push(nombreBarbero);
-        }
-        var lugarNegocio = document.getElementById('lugar_negocio').value;
-        var precioCorte = document.getElementById('precio_corte').value;
-        var precioCorteBarba = document.getElementById('precio_corte_barba').value;
-        var precioBarba = document.getElementById('precio_barba').value;
-        var precioTinte = document.getElementById('precio_tinte').value;
-        var notas = document.getElementById('notas_adicionales').value;
-        
-        // Construir un mensaje resumen
-        var mensaje = "Negocio: " + nombreNegocio + "\n";
-        mensaje += "Cantidad de barberos: " + cantidad + "\n";
-        mensaje += "Nombres: " + barberos.join(", ") + "\n";
-        mensaje += "Lugar: " + lugarNegocio + "\n";
-        mensaje += "Servicios:\n";
-        mensaje += " - Corte: " + precioCorte + "\n";
-        mensaje += " - Corte y Barba: " + precioCorteBarba + "\n";
-        mensaje += " - Barba: " + precioBarba + "\n";
-        mensaje += " - Tinte de Pelo: " + precioTinte + "\n";
-        mensaje += "Notas adicionales: " + notas;
-        
-        // Mostrar el resumen en el textarea y revelar el botón Continuar
-        var detalleRegistro = document.getElementById('detalle_registro');
-        detalleRegistro.value = mensaje;
-        detalleRegistro.style.display = "block";
-        document.getElementById('boton_continuar').style.display = "block";
-      });
-      
-      // Evento para el botón Continuar
-      document.getElementById('boton_continuar').addEventListener('click', function(e) {
-        e.preventDefault();
-        window.location.href = 'interfaz_organizar_agenda.html';
-      });
+      debouncedSave();
     });
-  </script>
+  }
+}
+
+/* ========= Servicios ========= */
+let services = [];
+let serviceIdCounter = 0;
+const servicesBody = document.getElementById('servicesBody');
+
+function createService(name='', duration=30, price=''){
+  return { id:`srv-${serviceIdCounter++}`, name, durationMins:duration, priceCOP:price, order:services.length };
+}
+
+function renderServices(){
+  services.sort((a,b)=>a.order-b.order);
+  servicesBody.innerHTML = '';
+  services.forEach((srv, idx)=>{
+    srv.order = idx;
+    const tr = document.createElement('tr'); tr.dataset.id=srv.id;
+
+    // Nombre
+    const nameTd=document.createElement('td');
+    const nameInput=document.createElement('input'); nameInput.type='text'; nameInput.value=srv.name; nameInput.className='service-name'; nameInput.placeholder='Ej: Corte clásico';
+    nameInput.addEventListener('input', e=>{ srv.name=e.target.value; debouncedSave(); });
+    nameTd.appendChild(nameInput);
+    const nameErr=document.createElement('span'); nameErr.className='error name-error'; nameTd.appendChild(nameErr);
+
+    // Duración (20–120, step 10)
+    const durTd=document.createElement('td');
+    const durInput=document.createElement('input'); durInput.type='number'; durInput.min='20'; durInput.max='120'; durInput.step='10'; durInput.value=srv.durationMins;
+    durInput.className='service-duration'; durInput.placeholder='20–120 (x10)';
+    durInput.addEventListener('input', e=>{
+      let v=parseInt(e.target.value,10);
+      if(isNaN(v)) v=20;
+      v=Math.min(120, Math.max(20, v));
+      v=Math.round(v/10)*10;
+      e.target.value=v;
+      srv.durationMins=v;
+      tr.querySelector('.token-preview').textContent=approxTokens(srv.durationMins);
+      debouncedSave();
+    });
+    durTd.appendChild(durInput);
+    const durErr=document.createElement('span'); durErr.className='error dur-error'; durTd.appendChild(durErr);
+
+    // Precio
+    const priceTd=document.createElement('td');
+    const priceInput=document.createElement('input'); priceInput.type='text'; priceInput.inputMode='numeric'; priceInput.placeholder='Ej: 18.000';
+    priceInput.value = srv.priceCOP==='' ? '' : fmtCOP(srv.priceCOP); priceInput.className='service-price';
+    priceInput.addEventListener('input', e=>{ srv.priceCOP=parseCOPInput(e.target.value); debouncedSave(); });
+    priceInput.addEventListener('blur', ()=>{ formatCOPInput(priceInput, srv.priceCOP); });
+    priceTd.appendChild(priceInput);
+    const priceErr=document.createElement('span'); priceErr.className='error price-error'; priceTd.appendChild(priceErr);
+
+    // Tokens preview
+    const tokenTd=document.createElement('td');
+    const tokenSpan=document.createElement('span'); tokenSpan.className='token-preview'; tokenSpan.textContent=approxTokens(srv.durationMins);
+    tokenTd.appendChild(tokenSpan);
+
+    // Acciones
+    const actionTd=document.createElement('td');
+    const upBtn=document.createElement('button'); upBtn.type='button'; upBtn.textContent='↑'; upBtn.className='btn-icon btn-icon-blue';
+    upBtn.addEventListener('click',()=>{ moveService(srv.id,-1); });
+    const downBtn=document.createElement('button'); downBtn.type='button'; downBtn.textContent='↓'; downBtn.className='btn-icon btn-icon-blue';
+    downBtn.addEventListener('click',()=>{ moveService(srv.id,1); });
+    const delBtn=document.createElement('button'); delBtn.type='button'; delBtn.textContent='✕'; delBtn.className='btn-icon btn-icon-red';
+    delBtn.addEventListener('click',()=>{ if(confirm('¿Eliminar este servicio?')) removeService(srv.id); });
+    actionTd.append(upBtn,downBtn,delBtn);
+
+    tr.append(nameTd,durTd,priceTd,tokenTd,actionTd);
+    servicesBody.appendChild(tr);
+  });
+  syncStaffServiceColumns();
+}
+
+function addServiceRow(service=createService()){ services.push(service); renderServices(); debouncedSave(); }
+function moveService(id,dir){ const i=services.findIndex(s=>s.id===id); const ni=i+dir; if(ni<0||ni>=services.length) return; [services[i],services[ni]]=[services[ni],services[i]]; renderServices(); debouncedSave(); }
+function removeService(id){ services = services.filter(s=>s.id!==id); staff.forEach(p=>{ delete p.offers[id]; }); renderServices(); debouncedSave(); }
+
+/* ========= Personal ========= */
+let staff = [];
+let staffIdCounter = 0;
+const staffBody = document.getElementById('staffBody');
+
+function createStaff(name=''){ return { id:`stf-${staffIdCounter++}`, name, offers:{} }; }
+
+function renderStaff(){
+  staffBody.innerHTML='';
+  staff.forEach(person=>{
+    const tr=document.createElement('tr'); tr.dataset.id=person.id;
+
+    const nameTd=document.createElement('td');
+    const nameInput=document.createElement('input'); nameInput.type='text'; nameInput.value=person.name; nameInput.className='staff-name'; nameInput.placeholder='Ej: Juan Pérez';
+    nameInput.addEventListener('input', e=>{ person.name=e.target.value; debouncedSave(); });
+    nameTd.appendChild(nameInput);
+    const nameErr=document.createElement('span'); nameErr.className='error'; nameTd.appendChild(nameErr);
+
+    const servicesTd=document.createElement('td'); servicesTd.className='staff-services';
+
+    const actionTd=document.createElement('td');
+    const delBtn=document.createElement('button'); delBtn.type='button'; delBtn.textContent='✕'; delBtn.className='btn-icon btn-icon-red';
+    delBtn.addEventListener('click',()=>{ if(confirm('¿Eliminar este personal?')) removeStaff(person.id); });
+
+    tr.appendChild(nameTd); tr.appendChild(servicesTd); actionTd.appendChild(delBtn); tr.appendChild(actionTd);
+    staffBody.appendChild(tr);
+  });
+  syncStaffServiceColumns();
+}
+
+function syncStaffServiceColumns(){
+  staff.forEach(person=>{
+    const tr=staffBody.querySelector(`tr[data-id='${person.id}']`); if(!tr) return;
+    const servicesTd=tr.querySelector('.staff-services'); servicesTd.innerHTML='';
+    services.forEach(service=>{
+      const label=document.createElement('label'); label.style.marginRight='12px';
+      const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!person.offers[service.id];
+      cb.addEventListener('change',()=>{ person.offers[service.id]=cb.checked; debouncedSave(); });
+      label.appendChild(cb); label.appendChild(document.createTextNode(' '+service.name));
+      servicesTd.appendChild(label);
+    });
+  });
+}
+
+function addStaffRow(person=createStaff()){ staff.push(person); renderStaff(); debouncedSave(); }
+function removeStaff(id){ staff = staff.filter(p=>p.id!==id); renderStaff(); debouncedSave(); }
+
+/* ========= NUEVO: sembrar personal por defecto ========= */
+function seedDefaultStaff() {
+  const demo = createStaff('Juan Pérez');
+
+  // Intentar asociar "Corte" y "Barba"
+  const corte = services.find(s => /corte\b/i.test(s.name) && !/corte y barba/i.test(s.name));
+  const barba = services.find(s => /barba\b/i.test(s.name) && !/corte y barba/i.test(s.name));
+
+  if (corte) demo.offers[corte.id] = true;
+  if (barba) demo.offers[barba.id] = true;
+
+  // Si no existen, asociar a los dos primeros servicios disponibles
+  if (!corte && !barba) {
+    services.slice(0, 2).forEach(s => { if (s) demo.offers[s.id] = true; });
+  }
+
+  addStaffRow(demo);
+}
+
+/* ========= Validaciones ========= */
+function clearErrors(){ document.querySelectorAll('.error').forEach(el=>el.textContent=''); }
+
+function validateForm(data){
+  clearErrors(); let valid=true; let first=null;
+
+  // Negocio
+  const shopNameEl=document.getElementById('shopName');
+  if(!data.shop.name){ document.getElementById('error-shopName').textContent='Requerido'; first=first||shopNameEl; valid=false; }
+  const addressEl=document.getElementById('shopAddress');
+  if(!data.shop.address){ document.getElementById('error-shopAddress').textContent='Requerido'; first=first||addressEl; valid=false; }
+
+  // Responsable
+  const ownerNameEl=document.getElementById('ownerName');
+  if(!data.owner.fullName){ document.getElementById('error-ownerName').textContent='Requerido'; first=first||ownerNameEl; valid=false; }
+  const emailPattern=/^[^\s@]+@[^\s@]+\.[^\s@]+$/; const ownerEmailEl=document.getElementById('ownerEmail');
+  if(!emailPattern.test(data.owner.email)){ document.getElementById('error-ownerEmail').textContent='Correo inválido'; first=first||ownerEmailEl; valid=false; }
+  const phonePattern=/^\d{10}$/; const ownerPhoneEl=document.getElementById('ownerPhone');
+  if(!phonePattern.test(data.owner.phone)){ document.getElementById('error-ownerPhone').textContent='Teléfono inválido'; first=first||ownerPhoneEl; valid=false; }
+  const ownerPassEl=document.getElementById('ownerPass');
+  if(data.owner.password.length<6){ document.getElementById('error-ownerPass').textContent='Mínimo 6 caracteres'; first=first||ownerPassEl; valid=false; }
+
+  // Servicios
+  if(data.services.length===0){ document.getElementById('error-services').textContent='Agrega al menos un servicio'; valid=false; }
+  const seen=new Set();
+  data.services.forEach(s=>{
+    const row=servicesBody.querySelector(`tr[data-id='${s.id}']`); if(!row) return;
+    const nameInput=row.querySelector('.service-name'); const nameErr=row.querySelector('.name-error');
+    const priceInput=row.querySelector('.service-price'); const priceErr=row.querySelector('.price-error');
+    const durInput=row.querySelector('.service-duration'); const durErr=row.querySelector('.dur-error');
+    const nameTrim=s.name.trim();
+    if(!nameTrim){ nameErr.textContent='Requerido'; first=first||nameInput; valid=false; }
+    else{
+      const key=nameTrim.toLowerCase();
+      if(seen.has(key)){ nameErr.textContent='Duplicado'; first=first||nameInput; valid=false; }
+      seen.add(key);
+    }
+    if(s.priceCOP===''||s.priceCOP<0){ priceErr.textContent='Precio inválido'; first=first||priceInput; valid=false; }
+    if(s.durationMins<20||s.durationMins>120||(s.durationMins%10)!==0){ durErr.textContent='Duración inválida (20–120, x10)'; first=first||durInput; valid=false; }
+    else { durErr.textContent=''; }
+  });
+
+  // Personal
+  staff.forEach(st=>{
+    const row=staffBody.querySelector(`tr[data-id='${st.id}']`); if(!row) return;
+    const nameInput=row.querySelector('.staff-name'); const err=row.querySelector('.error');
+    const hasOffers=Object.values(st.offers).some(Boolean);
+    if(st.name.trim()&&!hasOffers){ err.textContent='Seleccione un servicio'; first=first||row.querySelector('.staff-services input'); valid=false; }
+    if(!st.name.trim()&&hasOffers){ err.textContent='Nombre requerido'; first=first||nameInput; valid=false; }
+  });
+
+  if(first) first.focus();
+  return valid;
+}
+
+/* ========= Storage (solo durante la sesión/pestaña) ========= */
+function getFormData(){
+  return {
+    shop:{
+      name:document.getElementById('shopName').value.trim(),
+      address:document.getElementById('shopAddress').value.trim(),
+      lat:document.getElementById('shopLat').value,
+      lng:document.getElementById('shopLng').value
+    },
+    owner:{
+      fullName:document.getElementById('ownerName').value.trim(),
+      email:document.getElementById('ownerEmail').value.trim(),
+      phone:document.getElementById('ownerPhone').value.trim(),
+      password:document.getElementById('ownerPass').value
+    },
+    services: services.map(s=>({ id:s.id, name:s.name.trim(), durationMins:s.durationMins, priceCOP:s.priceCOP===''?'':Number(s.priceCOP), order:s.order })),
+    staff: staff.map(p=>({ id:p.id, name:p.name.trim(), offers:p.offers }))
+  };
+}
+
+function saveDraft(){ sessionStorage.setItem('cy_shop_draft', JSON.stringify(getFormData())); }
+const debouncedSave = debounce(saveDraft, 300);
+
+function loadDraft(){
+  const draft=sessionStorage.getItem('cy_shop_draft');
+  if(draft){
+    const data=JSON.parse(draft);
+
+    // Negocio
+    document.getElementById('shopName').value=data.shop.name||'';
+    document.getElementById('shopAddress').value=data.shop.address||'';
+    document.getElementById('shopLat').value=data.shop.lat||'';
+    document.getElementById('shopLng').value=data.shop.lng||'';
+    updateAddressPreview();
+
+    // Responsable
+    document.getElementById('ownerName').value=data.owner.fullName||'';
+    document.getElementById('ownerEmail').value=data.owner.email||'';
+    document.getElementById('ownerPhone').value=data.owner.phone||'';
+    document.getElementById('ownerPass').value=data.owner.password||'';
+
+    // Servicios / Personal
+    services=(data.services||[]).map(s=>({ ...s }));
+    serviceIdCounter=services.reduce((m,s)=>Math.max(m, parseInt((s.id||'').split('-')[1])||0),0)+1;
+
+    staff=(data.staff||[]).map(p=>({ ...p, offers:{ ...(p.offers||{}) } }));
+    staffIdCounter=staff.reduce((m,s)=>Math.max(m, parseInt((s.id||'').split('-')[1])||0),0)+1;
+
+    renderServices();
+    renderStaff();
+
+    // **NUEVO**: si no hay personal cargado, sembrar el de ejemplo
+    if (staff.length === 0) {
+      seedDefaultStaff();
+    }
+  } else {
+    // Predeterminados: servicios
+    addServiceRow(createService('Corte', 30, ''));
+    addServiceRow(createService('Barba', 20, ''));
+    addServiceRow(createService('Corte y barba', 40, ''));
+
+    // **NUEVO**: personal de ejemplo por defecto
+    seedDefaultStaff();
+  }
+}
+
+/* ========= Resumen (mock) ========= */
+const summaryText=document.getElementById('summaryText');
+const summarySection=document.getElementById('datos-resumen');
+const registerSection=document.getElementById('registro-final');
+
+function showSummary(data){
+  let lines=[];
+  lines.push(`Negocio: ${data.shop.name}`);
+  lines.push(`Dirección: ${data.shop.address}`);
+  if(data.shop.lat && data.shop.lng){ lines.push(`Lat/Lng: ${data.shop.lat}, ${data.shop.lng}`); }
+  lines.push(`Responsable: ${data.owner.fullName}`);
+  lines.push(`Correo: ${data.owner.email}`);
+  lines.push(`Teléfono: ${data.owner.phone}`);
+  lines.push('Servicios:');
+  data.services.sort((a,b)=>a.order-b.order).forEach(s=>{
+    lines.push(` - ${s.name} (${s.durationMins} min) $${fmtCOP(s.priceCOP)} COP (≈ ${computeTokens(s.durationMins)} token${computeTokens(s.durationMins)>1?'s':''})`);
+  });
+  if(data.staff.length){
+    lines.push('Personal:');
+    data.staff.forEach(p=>{
+      if(!p.name.trim()) return;
+      const offerNames=data.services.filter(s=>p.offers[s.id]).map(s=>s.name).join(', ');
+      lines.push(` - ${p.name}: ${offerNames || '—'}`);
+    });
+  }
+  summaryText.textContent=lines.join('\n');
+  summarySection.style.display='block';
+  registerSection.style.display='block';
+}
+
+/* ========= Eventos ========= */
+document.getElementById('addService').addEventListener('click', ()=>addServiceRow());
+document.getElementById('addStaff').addEventListener('click', ()=>addStaffRow());
+
+document.getElementById('submitForm').addEventListener('click', ()=>{
+  const data=getFormData();
+  if(validateForm(data)){
+    showSummary(data);
+    sessionStorage.setItem('cy_shop_submitted', JSON.stringify(data));
+  }
+});
+
+document.getElementById('registerBusiness').addEventListener('click', ()=>{
+  const data=getFormData();
+  if(!validateForm(data)) return;
+  sessionStorage.setItem('cy_shop_registered', JSON.stringify(data));
+  alert('¡Negocio registrado con éxito (demo front)!');
+});
+
+// Auto-guardado durante la sesión (mientras esté abierta la pestaña)
+document.querySelector('.container').addEventListener('input', debouncedSave);
+
+// Carga inicial (misma pestaña)
+document.addEventListener('DOMContentLoaded', loadDraft);
+
+</script>
 </body>
 </html>

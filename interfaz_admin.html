@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Administración</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    /* ===== Variables de layout (ajustadas a este archivo) ===== */
+    :root{
+      --container-w: 900px;          /* coincide con .container de esta interfaz */
+      --container-pad: 20px;
+      --container-bl: 4px;
+
+      --banner-h: 64px;
+      --page-sidepad: 16px;
+      --banner-bg: #e6e9ee;          /* gris nardo */
+      --banner-bg-hover: #d7dbe3;
+    }
+
+    /* ===== Base ===== */
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background-color: #eeeeee;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+      padding-top: calc(var(--banner-h) + 8px); /* espacio para banner fijo */
+    }
+    .container {
+      max-width: var(--container-w);
+      margin: auto;
+      padding: var(--container-pad);
+      background-color: #ffffff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      border-radius: 10px;
+      border-left: var(--container-bl) solid #5c6bc0;
+    }
+
+    /* ===== Banner fijo (mismo ancho que el card) ===== */
+    .app-banner{
+      position: fixed; top: 0; left: 0; right: 0; height: var(--banner-h);
+      z-index: 9999; background: transparent;
+    }
+    .app-banner .banner-box{
+      height: 100%;
+      width: min(calc(var(--container-w) + var(--container-pad)*2 + var(--container-bl)),
+                 calc(100% - var(--page-sidepad)*2));
+      margin: 0 auto;
+      background: var(--banner-bg);
+      border-bottom: 1px solid rgba(0,0,0,.06);
+      border-radius: 10px;
+      transition: background-color .2s ease;
+      display: flex; align-items: center;
+    }
+    .app-banner .banner-box:hover,
+    .app-banner .banner-box:focus-within{ background: var(--banner-bg-hover); }
+    .app-banner .banner-inner{
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+      gap: 8px; width: 100%; padding: 0 12px;
+    }
+    .banner-back{ justify-self: start; }
+    .banner-title{ justify-self: center; font-weight: 700; color: #233247; }
+    .banner-logo{ justify-self: end; display: inline-flex; align-items: center; }
+    .banner-logo img{ width: 52px; height: auto; display: block; position: static; }
+
+    /* Botón volver (estilo común) */
+    .back-button{
+      display:inline-block; text-decoration:none; font-size:14px; color:#5c6bc0;
+      padding:8px 12px; border:1px solid #5c6bc0; border-radius:6px;
+      transition: background-color .2s, color .2s;
+    }
+    .back-button:hover{ background:#5c6bc0; color:#fff; }
+
+    /* ===== CONTENIDOS ===== */
+    h1 { text-align: center; color: #000; font-size: 24px; font-weight: 600; margin-bottom: 20px; }
+    section { margin-bottom: 40px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+    th { background-color: #f2f2f2; color: #003366; }
+
+    .action-btn {
+      display: inline-block; margin-right: 5px; border: none; padding: 8px 12px;
+      border-radius: 5px; cursor: pointer; font-weight: 600; font-size: 14px; color: white;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    .btn-approve { background-color: #66BB6A; }
+    .btn-approve:hover { background-color: #57A05D; transform: translateY(-2px); }
+    .btn-reject { background-color: #f44336; }
+    .btn-reject:hover { background-color: #d32f2f; transform: translateY(-2px); }
+
+    label { display: block; margin: 10px 0; color: #003366; font-size: 16px; font-weight: 400; }
+    input[type="text"], input[type="number"]{
+      width: 100%; padding: 12px; margin-bottom: 20px; border: 2px solid #dddddd;
+      border-radius: 5px; box-sizing: border-box; transition: border-color 0.3s; font-size: 16px;
+    }
+    input[type="text"]:focus, input[type="number"]:focus{ outline: none; border-color: #7da2a9; }
+
+    /* Botón principal reducido (≈ 75% del ancho, centrado) */
+    .btn-validar{
+      display:block; width: min(680px, 75%); margin: 10px auto;
+      background-color: #5c6bc0; color: white; border: none; padding: 15px 20px;
+      border-radius: 5px; cursor: pointer; font-weight: 600; font-size: 16px;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    .btn-validar:hover{ background-color: #3f51b5; transform: translateY(-2px); }
+
+    .metrics { display: flex; justify-content: space-around; text-align: center; }
+    .metric { background-color: #f5f5f5; padding: 20px; border-radius: 5px; width: 30%; }
+    .metric h3 { margin: 0 0 10px 0; color: #003366; font-size: 18px; }
+    .metric p { margin: 0; font-size: 24px; color: #000; font-weight: 600; }
+
+    /* Legal (si deseas usarlo aquí también) */
+    .legal-outside{
+      margin: 18px auto 24px;
+      padding: 10px 12px;
+      max-width: calc(var(--container-w) + var(--container-pad)*2 + var(--container-bl));
+      text-align: center; color: #666; font-size: 14px; line-height: 1.35;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      .container { width: 100%; padding: 10px; }
+      h1, .banner-title { font-size: 20px; }
+      label, input[type="text"], input[type="number"], .btn-validar { font-size: 14px; }
+      .metrics { flex-direction: column; }
+      .metric { width: 100%; margin-bottom: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Banner superior ===== -->
+  <header class="app-banner" role="banner">
+    <div class="banner-box">
+      <div class="banner-inner">
+        <a href="#" class="back-button banner-back" onclick="history.back(); return false;">&larr; Volver</a>
+        <div class="banner-title">Panel de administración</div>
+        <a href="interfaz_inicio_s.html" class="banner-logo" aria-label="Ir al inicio">
+          <img src="LogoCitasYa.png" alt="Citas Ya">
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <section id="aprobaciones">
+      <h2>Bandeja de Aprobación</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Nombre</th>
+            <th>Barrio</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Negocio</td>
+            <td>Barbería Central</td>
+            <td>Centro</td>
+            <td>
+              <button class="action-btn btn-approve">Aprobar</button>
+              <button class="action-btn btn-reject">Rechazar</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Barbero</td>
+            <td>Juan López</td>
+            <td>Sur</td>
+            <td>
+              <button class="action-btn btn-approve">Aprobar</button>
+              <button class="action-btn btn-reject">Rechazar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="catalogo">
+      <h2>Validaciones de Catálogo</h2>
+      <form id="formCatalogo">
+        <label for="servicio">Servicio</label>
+        <input type="text" id="servicio" required>
+        <label for="precio">Precio</label>
+        <input type="number" id="precio" min="0" required>
+        <label for="duracion">Duración (minutos)</label>
+        <input type="number" id="duracion" min="0" required>
+        <button type="submit" class="btn-validar">Validar</button>
+        <p id="mensajeValidacion"></p>
+      </form>
+    </section>
+
+    <section id="metricas">
+      <h2>Panel de Métricas</h2>
+      <div class="metrics">
+        <div class="metric">
+          <h3>Barberos activos</h3>
+          <p id="metricBarberos">0</p>
+        </div>
+        <div class="metric">
+          <h3>Citas por día</h3>
+          <p id="metricCitas">0</p>
+        </div>
+        <div class="metric">
+          <h3>Tasa de cancelación</h3>
+          <p id="metricCancelacion">0%</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  
+  <div class="legal-outside">
+    Todos los derechos reservados © 2025<br>
+    Citas Ya S.A.S - Nit 810.000.000-0
+  </div> 
+
+  <script>
+    document.querySelectorAll('.btn-approve').forEach(btn => {
+      btn.addEventListener('click', function(){
+        alert('Solicitud aprobada');
+        this.closest('tr').remove();
+      });
+    });
+    document.querySelectorAll('.btn-reject').forEach(btn => {
+      btn.addEventListener('click', function(){
+        alert('Solicitud rechazada');
+        this.closest('tr').remove();
+      });
+    });
+    document.getElementById('formCatalogo').addEventListener('submit', function(e){
+      e.preventDefault();
+      const precio = parseFloat(document.getElementById('precio').value);
+      const duracion = parseFloat(document.getElementById('duracion').value);
+      const mensaje = document.getElementById('mensajeValidacion');
+      if (precio > 0 && duracion > 0) {
+        mensaje.textContent = 'Servicio válido.';
+        mensaje.style.color = '#66BB6A';
+      } else {
+        mensaje.textContent = 'Por favor ingrese precio y duración válidos.';
+        mensaje.style.color = '#f44336';
+      }
+    });
+    function generarMetricas() {
+      document.getElementById('metricBarberos').textContent = Math.floor(Math.random() * 50) + 10;
+      document.getElementById('metricCitas').textContent = Math.floor(Math.random() * 100) + 20;
+      document.getElementById('metricCancelacion').textContent = (Math.random() * 30).toFixed(1) + '%';
+    }
+    generarMetricas();
+  </script>
+</body>
+</html>

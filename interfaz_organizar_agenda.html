@@ -5,60 +5,37 @@
   <title>Organizar Agenda</title>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
+    /* ===== Variables (ajustadas a este archivo) ===== */
+    :root{
+      --container-w: 800px;     /* coincide con .container */
+      --container-pad: 20px;
+      --container-bl: 4px;
+
+      --banner-h: 64px;
+      --page-sidepad: 16px;
+      --banner-bg: #e6e9ee;
+      --banner-bg-hover: #d7dbe3;
+    }
+
+    /* ===== Base ===== */
     body {
       font-family: 'Open Sans', sans-serif;
       background-color: #eeeeee;
       margin: 0;
       padding: 20px;
       color: #333;
+      padding-top: calc(var(--banner-h) + 8px); /* espacio para banner */
     }
-    
     .container {
-      max-width: 800px;
+      max-width: var(--container-w);
       margin: auto;
-      padding: 20px;
+      padding: var(--container-pad);
       background-color: #ffffff;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
       border-radius: 10px;
-      border-left: 4px solid #5c6bc0;
+      border-left: var(--container-bl) solid #5c6bc0;
     }
-    
-    button {
-      display: block;
-      width: 100%;
-      margin: 20px 0;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      padding: 15px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background-color 0.3s, transform 0.3s;
-      font-size: 16px;
-    }
-    
-    button:hover {
-      background-color: #388E3C;
-      transform: translateY(-2px);
-    }
-    
-    .back-button {
-      display: inline-block;
-      margin-bottom: 20px;
-      text-decoration: none;
-      font-size: 16px;
-      color: #5c6bc0;
-      padding: 8px 12px;
-      border: 1px solid #5c6bc0;
-      border-radius: 5px;
-      transition: background-color 0.3s, color 0.3s;
-    }
-    .back-button:hover {
-      background-color: #5c6bc0;
-      color: #ffffff;
-    }
-    
+
     h1 {
       color: #000;
       font-size: 24px;
@@ -66,7 +43,7 @@
       margin-bottom: 20px;
       text-align: center;
     }
-    
+
     label {
       display: block;
       margin: 10px 0;
@@ -74,8 +51,8 @@
       font-size: 16px;
       font-weight: 400;
     }
-    
-    input[type="text"], select, textarea {
+
+    input[type="text"], select, textarea, input[type="time"] {
       width: 100%;
       padding: 12px;
       margin-bottom: 20px;
@@ -85,201 +62,224 @@
       transition: border-color 0.3s;
       font-size: 16px;
     }
-    
-    input[type="text"]:focus, select:focus, textarea:focus {
+    input[type="text"]:focus, select:focus, textarea:focus, input[type="time"]:focus {
       outline: none;
       border-color: #7da2a9;
     }
-    
-    textarea {
-      background-color: #fafafa;
-      border: 2px solid #e0e0e0;
-      resize: none;
+    textarea { background-color: #fafafa; border: 2px solid #e0e0e0; resize: none; }
+
+    /* Días */
+    .dias-disponibles div { margin-bottom: 5px; }
+
+    /* ===== Botones ===== */
+    button{
+      display: block; width: 100%; margin: 20px 0;
+      color:#fff; border:none; padding:15px 20px; border-radius:5px;
+      cursor:pointer; font-weight:600; transition: background-color .3s, transform .3s;
+      font-size:16px;
     }
-    
-    /* Estilos para las opciones de días */
-    .dias-disponibles div {
-      margin-bottom: 5px;
+    #actualizar_agenda{ background:#4CAF50; }
+    #actualizar_agenda:hover{ background:#388E3C; transform: translateY(-2px); }
+
+    #portal_pagos{ background:#f44336; }
+    #portal_pagos:hover{ background:#d32f2f; transform: translateY(-2px); }
+
+    /* NUEVO: botones reducidos (~75% del card, centrados) */
+    .btn-slim{
+      width: min(640px, 75%);
+      margin-left: auto;
+      margin-right: auto;
     }
-    
-    /* Estilo específico para el botón Portal de Pagos */
-    #portal_pagos {
-      background-color: #f44336;
+
+    .recordatorio { text-align:center; font-size:14px; color:#555; margin-top:10px; }
+
+    /* ===== Banner fijo (mismo ancho que el card) ===== */
+    .app-banner{
+      position: fixed; top: 0; left: 0; right: 0; height: var(--banner-h);
+      z-index: 9999; background: transparent;
     }
-    #portal_pagos:hover {
-      background-color: #d32f2f;
+    .app-banner .banner-box{
+      height: 100%;
+      width: min(calc(var(--container-w) + var(--container-pad)*2 + var(--container-bl)),
+                 calc(100% - var(--page-sidepad)*2));
+      margin: 0 auto;
+      background: var(--banner-bg);
+      border-bottom: 1px solid rgba(0,0,0,.06);
+      border-radius: 10px;
+      transition: background-color .2s ease;
+      display: flex; align-items: center;
     }
-    
-    /* Estilo para el recordatorio de pago */
-    .recordatorio {
-      text-align: center;
-      font-size: 14px;
-      color: #555;
-      margin-top: 10px;
+    .app-banner .banner-box:hover,
+    .app-banner .banner-box:focus-within{ background: var(--banner-bg-hover); }
+
+    .app-banner .banner-inner{
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+      gap: 8px; width: 100%; padding: 0 12px;
     }
-    
+    .banner-back{ justify-self: start; }
+    .banner-title{ justify-self: center; font-weight: 700; color: #233247; }
+    .banner-logo{ justify-self: end; display: inline-flex; align-items: center; }
+    .banner-logo img{ width: 52px; height: auto; display: block; }
+
+    .back-button{
+      display:inline-block; text-decoration:none; font-size:14px; color:#5c6bc0;
+      padding:8px 12px; border:1px solid #5c6bc0; border-radius:6px;
+      transition: background-color .2s, color .2s;
+    }
+    .back-button:hover{ background:#5c6bc0; color:#fff; }
+
+    /* ===== Legal fuera del card ===== */
+    .legal-outside{
+      margin: 18px auto 24px;
+      padding: 10px 12px;
+      max-width: calc(var(--container-w) + var(--container-pad)*2 + var(--container-bl));
+      text-align: center; color: #666; font-size: 14px; line-height: 1.35;
+    }
+
     @media (max-width: 768px) {
-      .container {
-        width: 100%;
-        padding: 10px;
-      }
-      
-      h1 {
-        font-size: 20px;
-      }
-      
-      label, button {
-        font-size: 14px;
-      }
+      .container { width: 100%; padding: 10px; }
+      h1, .banner-title { font-size: 20px; }
+      label, button { font-size: 14px; }
+      .btn-slim{ width: 100%; }
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h1>Organizar Agenda</h1>
+  <!-- ===== BANNER SUPERIOR ===== -->
+  <header class="app-banner" role="banner">
+    <div class="banner-box">
+      <div class="banner-inner">
+        <a href="#" class="back-button banner-back" onclick="history.back(); return false;">&larr; Volver</a>
+        <div class="banner-title">Organizar Agenda</div>
+        <a href="interfaz_inicio_s.html" class="banner-logo" aria-label="Ir al inicio">
+          <img src="LogoCitasYa.png" alt="Citas Ya">
+        </a>
+      </div>
+    </div>
+  </header>
 
-  <a href="interfaz_inicio_s.html" class="back-button">&larr; Volver</a>
-  
-  <!-- Datos básicos -->
-  <label for="nombre_usuario">Ingrese su nombre</label>
-  <input type="text" id="nombre_usuario" placeholder="Ej: Juan Uribe">
-  
-  <label for="nombre_barberia">Nombre de la Barbería/Peluquería</label>
-  <input type="text" id="nombre_barberia" placeholder="Ej: Barbería XYZ">
-  
-  <!-- Horario de trabajo -->
-  <label>Seleccione su horario de trabajo</label>
-  
-  <label for="hora_inicio">Hora de inicio</label>
-  <input type="time" id="hora_inicio" step="600" min="07:00" max="20:00">
-  
-  <label for="hora_fin">Hora de fin</label>
-  <input type="time" id="hora_fin" step="600" min="07:10" max="20:00">
-  
-  <!-- Días de trabajo -->
-  <label>Seleccione los días que trabajará</label>
-  <div class="dias-disponibles">
-    <div>
-      <input type="checkbox" id="lunes" value="Lunes">
-      <label for="lunes">Lunes</label>
+  <div class="container">
+    <h1>Organizar Agenda</h1>
+
+    <!-- Datos básicos -->
+    <label for="nombre_usuario">Ingrese su nombre</label>
+    <input type="text" id="nombre_usuario" placeholder="Ej: Juan Uribe">
+
+    <label for="nombre_barberia">Nombre de la Barbería/Peluquería</label>
+    <input type="text" id="nombre_barberia" placeholder="Ej: Barbería XYZ">
+
+    <!-- Horario de trabajo -->
+    <label>Seleccione su horario de trabajo</label>
+
+    <label for="hora_inicio">Hora de inicio</label>
+    <input type="time" id="hora_inicio" step="600" min="07:00" max="20:00">
+
+    <label for="hora_fin">Hora de fin</label>
+    <input type="time" id="hora_fin" step="600" min="07:10" max="20:00">
+
+    <!-- Días de trabajo -->
+    <label>Seleccione los días que trabajará</label>
+    <div class="dias-disponibles">
+      <div><input type="checkbox" id="lunes" value="Lunes"><label for="lunes"> Lunes</label></div>
+      <div><input type="checkbox" id="martes" value="Martes"><label for="martes"> Martes</label></div>
+      <div><input type="checkbox" id="miercoles" value="Miércoles"><label for="miercoles"> Miércoles</label></div>
+      <div><input type="checkbox" id="jueves" value="Jueves"><label for="jueves"> Jueves</label></div>
+      <div><input type="checkbox" id="viernes" value="Viernes"><label for="viernes"> Viernes</label></div>
+      <div><input type="checkbox" id="sabado" value="Sábado"><label for="sabado"> Sábado</label></div>
     </div>
-    <div>
-      <input type="checkbox" id="martes" value="Martes">
-      <label for="martes">Martes</label>
-    </div>
-    <div>
-      <input type="checkbox" id="miercoles" value="Miércoles">
-      <label for="miercoles">Miércoles</label>
-    </div>
-    <div>
-      <input type="checkbox" id="jueves" value="Jueves">
-      <label for="jueves">Jueves</label>
-    </div>
-    <div>
-      <input type="checkbox" id="viernes" value="Viernes">
-      <label for="viernes">Viernes</label>
-    </div>
-    <div>
-      <input type="checkbox" id="sabado" value="Sábado">
-      <label for="sabado">Sábado</label>
-    </div>
+
+    <!-- Excepción en la disponibilidad -->
+    <label>Excepción en la disponibilidad</label>
+
+    <label for="dia_excepcion">Seleccione día para excepción</label>
+    <select id="dia_excepcion">
+      <option>Seleccione</option>
+      <option>Lunes</option>
+      <option>Martes</option>
+      <option>Miércoles</option>
+      <option>Jueves</option>
+      <option>Viernes</option>
+      <option>Sábado</option>
+    </select>
+
+    <label for="estado_excepcion">Estado para la excepción</label>
+    <select id="estado_excepcion">
+      <option>Seleccione</option>
+      <option>Disponible</option>
+      <option>Ocupado</option>
+    </select>
+
+    <!-- Botones reducidos -->
+    <button id="actualizar_agenda" class="btn-slim">Actualizar agenda</button>
+
+    <h2 id="respuesta_agenda"></h2>
+    <textarea id="detalle_agenda" rows="4"></textarea>
+
+    <button id="portal_pagos" class="btn-slim">Portal de Pagos</button>
+    <p class="recordatorio">Recuerda comprar tus Tokens</p>
   </div>
-  
-  <!-- Excepción en la disponibilidad -->
-  <label>Excepción en la disponibilidad</label>
-  <label for="dia_excepcion">Seleccione día para excepción</label>
-  <select id="dia_excepcion">
-    <option>Seleccione</option>
-    <option>Lunes</option>
-    <option>Martes</option>
-    <option>Miércoles</option>
-    <option>Jueves</option>
-    <option>Viernes</option>
-    <option>Sábado</option>
-  </select>
-  
-  <label for="estado_excepcion">Estado para la excepción</label>
-  <select id="estado_excepcion">
-    <option>Seleccione</option>
-    <option>Disponible</option>
-    <option>Ocupado</option>
-  </select>
-  
-  <button id="actualizar_agenda">Actualizar agenda</button>
-  <h2 id="respuesta_agenda"></h2>
-  <textarea id="detalle_agenda" rows="4"></textarea>
-  
-  <!-- Botón Portal de Pagos -->
-  <button id="portal_pagos">Portal de Pagos</button>
-  <p class="recordatorio">Recuerda hacer el pago de la suscripción antes del 28 de cada mes.</p>
-</div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  var nombreUsuario = document.getElementById('nombre_usuario');
-  var nombreBarberia = document.getElementById('nombre_barberia');
-  var horaInicio = document.getElementById('hora_inicio');
-  var horaFin = document.getElementById('hora_fin');
-  var actualizarBtn = document.getElementById('actualizar_agenda');
-  var respuestaAgenda = document.getElementById('respuesta_agenda');
-  var detalleAgenda = document.getElementById('detalle_agenda');
+  <!-- ===== LEGAL FUERA DE LA PÁGINA ===== -->
+  <div class="legal-outside">
+    Todos los derechos reservados © 2025<br>
+    Citas Ya S.A.S - Nit 810.000.000-0
+  </div>
 
-  var diasCheckbox = {
-    lunes: document.getElementById('lunes'),
-    martes: document.getElementById('martes'),
-    miercoles: document.getElementById('miercoles'),
-    jueves: document.getElementById('jueves'),
-    viernes: document.getElementById('viernes'),
-    sabado: document.getElementById('sabado')
-  };
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var nombreUsuario = document.getElementById('nombre_usuario');
+      var nombreBarberia = document.getElementById('nombre_barberia');
+      var horaInicio = document.getElementById('hora_inicio');
+      var horaFin = document.getElementById('hora_fin');
+      var actualizarBtn = document.getElementById('actualizar_agenda');
+      var respuestaAgenda = document.getElementById('respuesta_agenda');
+      var detalleAgenda = document.getElementById('detalle_agenda');
 
-  var diaExcepcion = document.getElementById('dia_excepcion');
-  var estadoExcepcion = document.getElementById('estado_excepcion');
+      var diasCheckbox = {
+        lunes: document.getElementById('lunes'),
+        martes: document.getElementById('martes'),
+        miercoles: document.getElementById('miercoles'),
+        jueves: document.getElementById('jueves'),
+        viernes: document.getElementById('viernes'),
+        sabado: document.getElementById('sabado')
+      };
 
-  actualizarBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    var nombre = nombreUsuario.value.trim();
-    var barberia = nombreBarberia.value.trim();
-    var inicio = horaInicio.value;
-    var fin = horaFin.value;
+      var diaExcepcion = document.getElementById('dia_excepcion');
+      var estadoExcepcion = document.getElementById('estado_excepcion');
 
-    // Obtiene los días seleccionados
-    var diasTrabajados = [];
-    for (var dia in diasCheckbox) {
-      if (diasCheckbox[dia].checked) {
-        diasTrabajados.push(diasCheckbox[dia].value);
-      }
-    }
+      actualizarBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        var nombre = nombreUsuario.value.trim();
+        var barberia = nombreBarberia.value.trim();
+        var inicio = horaInicio.value;
+        var fin = horaFin.value;
 
-    // Construye el mensaje de la agenda
-    var mensaje = "Agenda actualizada para " + nombre + " - " + barberia + ":\n";
-    mensaje += "Horario de trabajo: de " + (inicio ? inicio : "no seleccionado") + " a " + (fin ? fin : "no seleccionado") + ".\n";
-    if(diasTrabajados.length > 0) {
-      mensaje += "Días de trabajo: " + diasTrabajados.join(", ") + ".\n";
-    } else {
-      mensaje += "No se han seleccionado días de trabajo.\n";
-    }
+        var diasTrabajados = [];
+        for (var dia in diasCheckbox) {
+          if (diasCheckbox[dia].checked) diasTrabajados.push(diasCheckbox[dia].value);
+        }
 
-    // Verifica la excepción (si se seleccionó un día y un estado)
-    var excepcionDia = diaExcepcion.options[diaExcepcion.selectedIndex].text;
-    var excepcionEstado = estadoExcepcion.options[estadoExcepcion.selectedIndex].text;
-    if (excepcionDia !== "Seleccione" && excepcionEstado !== "Seleccione") {
-      mensaje += "Excepción: El día " + excepcionDia + " se marcará como " + excepcionEstado + ".\n";
-    } else {
-      mensaje += "Sin excepciones de disponibilidad.\n";
-    }
+        var mensaje = "Agenda actualizada para " + nombre + " - " + barberia + ":\n";
+        mensaje += "Horario de trabajo: de " + (inicio || "no seleccionado") + " a " + (fin || "no seleccionado") + ".\n";
+        mensaje += (diasTrabajados.length ? "Días de trabajo: " + diasTrabajados.join(", ") + ".\n" : "No se han seleccionado días de trabajo.\n");
 
-    respuestaAgenda.textContent = "Agenda Actualizada";
-    detalleAgenda.value = mensaje;
-  });
-  
-  // Botón Portal de Pagos: redirige a la interfaz de pagos
-  document.getElementById('portal_pagos').addEventListener('click', function() {
-    window.location.href = 'interfaz_pagos.html';
-  });
-});
-</script>
+        var excepcionDia = diaExcepcion.options[diaExcepcion.selectedIndex].text;
+        var excepcionEstado = estadoExcepcion.options[estadoExcepcion.selectedIndex].text;
+        if (excepcionDia !== "Seleccione" && excepcionEstado !== "Seleccione") {
+          mensaje += "Excepción: El día " + excepcionDia + " se marcará como " + excepcionEstado + ".\n";
+        } else {
+          mensaje += "Sin excepciones de disponibilidad.\n";
+        }
 
+        respuestaAgenda.textContent = "Agenda Actualizada";
+        detalleAgenda.value = mensaje;
+      });
+
+      document.getElementById('portal_pagos').addEventListener('click', function() {
+        window.location.href = 'interfaz_pagos.html';
+      });
+    });
+  </script>
 </body>
 </html>

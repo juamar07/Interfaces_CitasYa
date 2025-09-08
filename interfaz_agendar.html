@@ -5,199 +5,256 @@
 <title>Programación de Citas</title>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-body {
-  font-family: 'Open Sans', sans-serif;
-  background-color: #eeeeee;
-  margin: 0;
-  padding: 20px;
-  color: #333;
-}
+  /* ===== Variables de layout (coinciden con este card) ===== */
+  :root{
+    --container-w: 800px;      /* mismo ancho que .container de esta página */
+    --container-pad: 20px;
+    --container-bl: 4px;
+    --banner-h: 64px;
+    --page-sidepad: 16px;
+    --banner-bg: #e6e9ee;
+    --banner-bg-hover: #d7dbe3;
+  }
 
-.container {
-  max-width: 800px;
-  margin: auto;
-  padding: 20px;
-  background-color: #ffffff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-  border-radius: 10px;
-  border-left: 4px solid #5c6bc0;
-}
+  /* ===== Base ===== */
+  body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #eeeeee;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+    padding-top: calc(var(--banner-h) + 8px); /* espacio para banner fijo */
+  }
 
-/* Estilo base para los botones */
-button {
-  display: block;
-  width: 100%;
-  margin: 20px 0;
-  background-color: #5c6bc0;
-  color: white;
-  border: none;
-  padding: 15px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s, transform 0.3s;
-}
-
-button:hover {
-  background-color: #3f51b5;
-  transform: translateY(-2px);
-}
-
-/* Botón "Programar cita" en color verde */
-button#programar_cita {
-  background-color: #4CAF50;
-}
-button#programar_cita:hover {
-  background-color: #388E3C;
-}
-
-button#cancelar_cita {
-  background-color: #f44336;
-  margin-top: 10px;
-}
-button#cancelar_cita:hover {
-  background-color: #d32f2f;
-}
-
-.back-button {
-  display: inline-block;
-  margin-bottom: 20px;
-  text-decoration: none;
-  font-size: 16px;
-  color: #5c6bc0;
-  padding: 8px 12px;
-  border: 1px solid #5c6bc0;
-  border-radius: 5px;
-  transition: background-color 0.3s, color 0.3s;
-}
-.back-button:hover {
-  background-color: #5c6bc0;
-  color: #ffffff;
-}
-
-h1 {
-  color: #000;
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-label {
-  display: block;
-  margin: 10px 0;
-  color: #003366;
-  font-size: 16px;
-  font-weight: 400;
-}
-
-input[type="text"], select, textarea,
-input[type="date"], input[type="time"] {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 20px;
-  border: 2px solid #dddddd;
-  border-radius: 5px;
-  box-sizing: border-box;
-  transition: border-color 0.3s;
-  font-size: 16px;
-}
-
-input[type="text"]:focus, select:focus, textarea:focus,
-input[type="date"]:focus, input[type="time"]:focus {
-  outline: none;
-  border-color: #7da2a9;
-}
-
-/* Agrandar el ícono del calendario en navegadores WebKit */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  transform: scale(1.5);
-  filter: invert(30%);
-}
-
-/* Agrandar el ícono del reloj en navegadores WebKit */
-input[type="time"]::-webkit-calendar-picker-indicator {
-  transform: scale(1.5);
-  filter: invert(30%);
-}
-
-#detalle_cita {
-  background-color: #fafafa;
-  border: 2px solid #e0e0e0;
-  height: 100px;
-  resize: none;
-}
-
-@media (max-width: 768px) {
   .container {
-    width: 100%;
-    padding: 10px;
+    max-width: var(--container-w);
+    margin: auto;
+    padding: var(--container-pad);
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    border-left: var(--container-bl) solid #5c6bc0;
   }
-  
+
   h1 {
-    font-size: 20px;
+    color: #000;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
   }
-  
-  label, button {
-    font-size: 14px;
+
+  label {
+    display: block;
+    margin: 10px 0;
+    color: #003366;
+    font-size: 16px;
+    font-weight: 400;
   }
-}
+
+  input[type="text"], select, textarea,
+  input[type="date"], input[type="time"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 2px solid #dddddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+    font-size: 16px;
+  }
+  input[type="text"]:focus, select:focus, textarea:focus,
+  input[type="date"]:focus, input[type="time"]:focus {
+    outline: none;
+    border-color: #7da2a9;
+  }
+
+  /* Agrandar iconos de date/time (WebKit) */
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    transform: scale(1.5);
+    filter: invert(30%);
+  }
+
+  #detalle_cita {
+    background-color: #fafafa;
+    border: 2px solid #e0e0e0;
+    height: 100px;
+    resize: none;
+  }
+
+  /* ===== Botones ===== */
+  button {
+    display: block;
+    width: 100%;
+    margin: 20px 0;
+    background-color: #5c6bc0;
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s, transform 0.3s;
+    font-size: 16px;
+  }
+  button:hover { background-color: #3f51b5; transform: translateY(-2px); }
+
+  /* Verde para Programar cita */
+  #programar_cita { background-color: #4CAF50; }
+  #programar_cita:hover { background-color: #388E3C; }
+
+  /* Rojo para cancelar */
+  #cancelar_cita { background-color: #f44336; margin-top: 0; }
+  #cancelar_cita:hover { background-color: #d32f2f; }
+
+  /* NUEVO: tamaños (≈ 75% del ancho del card) */
+  .btn-slim {                      /* un botón por fila (subimagen 2) */
+    width: min(640px, 75%);
+    margin-left: auto;
+    margin-right: auto;
+  }
+      .btn-row-2{
+      width: min(680px, 75%);
+      margin: 16px auto 0;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    /* fuerza mismo ancho y elimina márgenes verticales del botón global */
+    .btn-row-2 button{
+      width: 100% !important;
+      margin: 0 !important;
+      box-sizing: border-box;
+    }
+
+  /* ===== Banner superior (mismo ancho que el card) ===== */
+  .app-banner{
+    position: fixed; top: 0; left: 0; right: 0; height: var(--banner-h);
+    z-index: 9999; background: transparent;
+  }
+  .app-banner .banner-box{
+    height: 100%;
+    width: min(calc(var(--container-w) + var(--container-pad)*2 + var(--container-bl)),
+               calc(100% - var(--page-sidepad)*2));
+    margin: 0 auto;
+    background: var(--banner-bg);
+    border-bottom: 1px solid rgba(0,0,0,.06);
+    border-radius: 10px;
+    transition: background-color .2s ease;
+    display: flex; align-items: center;
+  }
+  .app-banner .banner-box:hover,
+  .app-banner .banner-box:focus-within{ background: var(--banner-bg-hover); }
+
+  .app-banner .banner-inner{
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+    gap: 8px; width: 100%; padding: 0 12px;
+  }
+  .banner-back{ justify-self: start; }
+  .banner-title{ justify-self: center; font-weight: 700; color: #233247; }
+  .banner-logo{ justify-self: end; display: inline-flex; align-items: center; }
+  .banner-logo img{ width: 52px; height: auto; display: block; }
+
+  /* botón volver del banner */
+  .back-button{
+    display:inline-block; text-decoration:none; font-size:14px; color:#5c6bc0;
+    padding:8px 12px; border:1px solid #5c6bc0; border-radius:6px;
+    transition: background-color .2s, color .2s;
+  }
+  .back-button:hover{ background:#5c6bc0; color:#fff; }
+
+  @media (max-width: 768px) {
+    .container { width: 100%; padding: 10px; }
+    h1, .banner-title { font-size: 20px; }
+    label, button { font-size: 14px; }
+    .btn-slim, .btn-row-2 { width: 100%; }
+    .btn-row-2 { grid-template-columns: 1fr; }
+  }
+
+  /* ===== LEGAL FUERA DE LA PÁGINA ===== */
+  .legal-outside{
+    margin: 18px auto 24px;
+    padding: 10px 12px;
+    max-width: calc(var(--container-w) + var(--container-pad)*2 + var(--container-bl));
+    text-align: center; color: #666; font-size: 14px; line-height: 1.35;
+  }
+
 </style>
 </head>
 <body>
 
-<div class="container">
-  <h1>Programación de Citas</h1>
-  
-  <a href="interfaz_inicio_s.html" class="back-button">&larr; Volver</a>
-  
-  <form id="formulario_citas"></form>
-  
-  <label for="nombre_completo">Ingrese su nombre completo</label>
-  <input type="text" id="nombre_completo" placeholder="Ej: Juan Martín Betancur Uribe">
-  
-  <label for="tipo_cita">Seleccione tipo de cita para agendar</label>
-  <select id="tipo_cita">
-    <option>Seleccione</option>
-    <option>Barbería</option>
-    <option>Manicure</option>
-  </select>
-  
-  <label for="barrio_cita">Seleccione el barrio de la cita</label>
-  <select id="barrio_cita">
-    <option>Seleccione</option>
-    <option>Cable</option>
-    <option>Enea</option>
-    <option>Milan</option>
-    <option>Palermo</option>
-    <option>Estrella</option>
-  </select>
-  
-  <label for="nombre_servicio">Nombre de la <span id="tipo_servicio_label"></span></label>
-  <select id="nombre_servicio">
-    <option>Seleccione</option>
-    <!-- Las opciones se llenarán dinámicamente basándose en el barrio -->
-  </select>
+  <!-- ===== BANNER SUPERIOR ===== -->
+  <header class="app-banner" role="banner">
+    <div class="banner-box">
+      <div class="banner-inner">
+        <a href="#" class="back-button banner-back" onclick="history.back(); return false;">&larr; Volver</a>
+        <div class="banner-title">Programación de Citas</div>
+        <a href="interfaz_inicio_s.html" class="banner-logo" aria-label="Ir al inicio">
+          <img src="LogoCitasYa.png" alt="Citas Ya">
+        </a>
+      </div>
+    </div>
+  </header>
 
-  <!-- Reemplazamos el select de día por el input tipo date -->
-  <label for="fecha_cita">Seleccione la fecha de la cita</label>
-  <input type="date" id="fecha_cita">
-  <p id="dia_semana"></p>
-  
-  <!-- Reemplazamos el select de hora por el input tipo time con bloques de 10 min -->
-  <label for="hora_cita">Seleccione la hora que desea la cita</label>
-  <input type="time" id="hora_cita" step="600">
-  <p id="hora_seleccionada"></p>
-  
-  <button id="programar_cita">Programar cita</button>
-  <h2 id="respuesta_cita"></h2>
-  <textarea id="detalle_cita" rows="4"></textarea>
-  <button id="programar_otra_cita">Programar otra cita</button>
+  <div class="container">
 
-  <!-- Botón "Iniciar sesión" eliminado -->
-  
-  <button type="button" id="cancelar_cita">Cancelar una cita</button>
-</div>
+    <h1>Programación de Citas</h1>
+
+    <!-- (Se eliminó el botón volver y el logo flotante previos) -->
+
+    <form id="formulario_citas"></form>
+
+    <label for="nombre_completo">Ingrese su nombre completo</label>
+    <input type="text" id="nombre_completo" placeholder="Ej: Juan Martín Betancur Uribe">
+
+    <label for="tipo_cita">Seleccione tipo de cita para agendar</label>
+    <select id="tipo_cita">
+      <option>Seleccione</option>
+      <option>Barbería</option>
+      <option>Manicure</option>
+    </select>
+
+    <label for="barrio_cita">Seleccione el barrio de la cita</label>
+    <select id="barrio_cita">
+      <option>Seleccione</option>
+      <option>Cable</option>
+      <option>Enea</option>
+      <option>Milan</option>
+      <option>Palermo</option>
+      <option>Estrella</option>
+    </select>
+
+    <label for="nombre_servicio">Nombre de la <span id="tipo_servicio_label"></span></label>
+    <select id="nombre_servicio">
+      <option>Seleccione</option>
+    </select>
+
+    <label for="fecha_cita">Seleccione la fecha de la cita</label>
+    <input type="date" id="fecha_cita">
+    <p id="dia_semana"></p>
+
+    <label for="hora_cita">Seleccione la hora que desea la cita</label>
+    <input type="time" id="hora_cita" step="600">
+    <p id="hora_seleccionada"></p>
+
+    <!-- Botón principal reducido (~75%) -->
+    <button id="programar_cita" class="btn-slim">Programar cita</button>
+
+    <h2 id="respuesta_cita"></h2>
+    <textarea id="detalle_cita" rows="4"></textarea>
+
+    <!-- Dos botones en una fila -->
+    <div class="btn-row-2">
+      <button id="programar_otra_cita">Programar otra cita</button>
+      <button type="button" id="cancelar_cita">Cancelar una cita</button>
+    </div>
+  </div>
+
+  <div class="legal-outside">
+    Todos los derechos reservados © 2025<br>
+    Citas Ya S.A.S - Nit 810.000.000-0
+  </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -209,14 +266,12 @@ document.addEventListener('DOMContentLoaded', function() {
   var barrioCita = document.getElementById('barrio_cita');
   var nombreServicio = document.getElementById('nombre_servicio');
   var tipoServicioLabel = document.getElementById('tipo_servicio_label');
-  
-  // Nuevos campos para fecha y hora
+
   var fechaCita = document.getElementById('fecha_cita');
   var diaSemanaP = document.getElementById('dia_semana');
   var horaCita = document.getElementById('hora_cita');
   var horaSeleccionadaP = document.getElementById('hora_seleccionada');
 
-  // Actualizar día de la semana cuando se selecciona la fecha
   fechaCita.addEventListener("change", function() {
     if(this.value !== "") {
       var parts = this.value.split("-");
@@ -232,35 +287,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Actualizar hora seleccionada cuando se elige la hora
   horaCita.addEventListener("change", function() {
-    if(this.value !== "") {
-      horaSeleccionadaP.textContent = "La hora seleccionada es: " + this.value;
-    } else {
-      horaSeleccionadaP.textContent = "";
-    }
+    horaSeleccionadaP.textContent = this.value ? ("La hora seleccionada es: " + this.value) : "";
   });
-  
-  // Actualizar la etiqueta del servicio según el tipo de cita seleccionado
+
   tipoCita.addEventListener('change', function() {
     tipoServicioLabel.textContent = tipoCita.value === 'Seleccione' ? ' ' : tipoCita.value;
     actualizarServicios(barrioCita.value, tipoCita.value);
   });
-  
+
   barrioCita.addEventListener('change', function() {
     actualizarServicios(barrioCita.value, tipoCita.value);
   });
-  
+
   function actualizarServicios(barrio, tipo) {
     var serviciosPorBarrio = {
-      'Cable': {'Barbería': ['Cable 1', 'Cable 2'], 'Manicure': ['Cable A', 'Cable B']},
-      'Enea': {'Barbería': ['Enea 1', 'Enea 2'], 'Manicure': ['Enea A', 'Enea B']},
-      'Milan': {'Barbería': ['Milan 1', 'Milan 2'], 'Manicure': ['Milan A', 'Milan B']},
-      'Palermo': {'Barbería': ['Palermo 1', 'Palermo 2'], 'Manicure': ['Palermo A', 'Palermo B']},
-      'Estrella': {'Barbería': ['Estrella 1', 'Estrella 2'], 'Manicure': ['Estrella A', 'Estrella B']}
+      'Cable':    {'Barbería': ['Cable 1', 'Cable 2'],    'Manicure': ['Cable A', 'Cable B']},
+      'Enea':     {'Barbería': ['Enea 1', 'Enea 2'],      'Manicure': ['Enea A', 'Enea B']},
+      'Milan':    {'Barbería': ['Milan 1', 'Milan 2'],    'Manicure': ['Milan A', 'Milan B']},
+      'Palermo':  {'Barbería': ['Palermo 1', 'Palermo 2'],'Manicure': ['Palermo A', 'Palermo B']},
+      'Estrella': {'Barbería': ['Estrella 1', 'Estrella 2'],'Manicure':['Estrella A', 'Estrella B']}
     };
 
-    nombreServicio.innerHTML = ''; // Limpiar las opciones antiguas
+    nombreServicio.innerHTML = '';
     var defaultOption = document.createElement('option');
     defaultOption.value = 'Seleccione';
     defaultOption.textContent = 'Seleccione';
@@ -276,31 +325,28 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   }
-  
-  botonProgramar.addEventListener('click', function() {
+
+  botonProgramar.addEventListener('click', function(e) {
+    e.preventDefault();
     var nombre = nombreCompleto.value;
     var tipo = tipoCita.options[tipoCita.selectedIndex].text;
     var barrio = barrioCita.options[barrioCita.selectedIndex].text;
-    // Obtenemos la fecha y la formateamos junto con el día de la semana
     var fechaValue = fechaCita.value;
-    var diaTexto = diaSemanaP.textContent; // "El día seleccionado es: X"
-    // Obtenemos la hora del input time
+    var diaTexto = diaSemanaP.textContent.replace("El día seleccionado es: ", "");
     var hora = horaCita.value;
-    var horaTexto = horaSeleccionadaP.textContent; // "La hora seleccionada es: HH:MM"
     var servicio = nombreServicio.options[nombreServicio.selectedIndex].text;
-    
-    // Se construye el mensaje con la fecha y hora
+
     detalleCita.value = nombre + ", usted ha programado una cita de " + tipo +
-      " en " + servicio + ", barrio " + barrio + 
-      ", para el " + (fechaValue ? fechaValue + " (" + diaTexto.replace("El día seleccionado es: ", "") + ")" : "fecha no seleccionada") +
+      " en " + servicio + ", barrio " + barrio +
+      ", para el " + (fechaValue ? (fechaValue + (diaTexto ? " (" + diaTexto + ")" : "")) : "fecha no seleccionada") +
       " a las " + (hora ? hora : "hora no seleccionada") + ".";
   });
-  
-  botonProgramarOtra.addEventListener('click', function() {
-    nombreCompleto.value = ''; // Limpiar el campo de texto del nombre
+
+  botonProgramarOtra.addEventListener('click', function(e) {
+    e.preventDefault();
+    nombreCompleto.value = '';
     tipoCita.selectedIndex = 0;
     barrioCita.selectedIndex = 0;
-    // Limpiar campos de fecha y hora
     fechaCita.value = "";
     diaSemanaP.textContent = "";
     horaCita.value = "";
@@ -309,9 +355,9 @@ document.addEventListener('DOMContentLoaded', function() {
     detalleCita.value = '';
     tipoServicioLabel.textContent = '---';
   });
-  
-  // Evento para el botón "Cancelar una cita"
-  document.getElementById('cancelar_cita').addEventListener('click', function() {
+
+  document.getElementById('cancelar_cita').addEventListener('click', function(e) {
+    e.preventDefault();
     window.location.href = 'interfaz_cancelar.html';
   });
 });

@@ -1,208 +1,440 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Portal de Pagos</title>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet" />
   <style>
-    body {
+    /* ===== Variables (ajustadas a esta interfaz) ===== */
+    :root{
+      --container-w: 800px;     /* max-width del card */
+      --container-pad: 20px;
+      --container-bl: 4px;
+
+      --banner-h: 64px;
+      --page-sidepad: 16px;
+      --banner-bg: #e6e9ee;     /* gris nardo */
+      --banner-bg-hover: #d7dbe3;
+    }
+
+    /* ===== Base ===== */
+    body{
       font-family: 'Open Sans', sans-serif;
       background-color: #eeeeee;
-      margin: 0;
-      padding: 20px;
-      color: #333;
+      margin:0;
+      padding:20px;
+      color:#333;
+      padding-top: calc(var(--banner-h) + 8px); /* espacio para banner fijo */
     }
-    .container {
-      max-width: 800px;
+    .container{
+      max-width: var(--container-w);
       margin: auto;
-      padding: 20px;
-      background-color: #ffffff;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      padding: var(--container-pad);
+      background-color:#fff;
+      box-shadow:0 4px 8px rgba(0,0,0,0.05);
+      border-radius:10px;
+      border-left: var(--container-bl) solid #5c6bc0;
+      position: relative;
+    }
+    h1{
+      text-align:center;
+      font-size:24px;
+      margin: 10px 0 20px;
+    }
+    label{
+      display:block;
+      margin:12px 0 6px;
+      font-weight:600;
+    }
+    input[type="text"], input[type="email"], input[type="number"], textarea, select{
+      width:100%;
+      padding:12px;
+      border:1px solid #ddd;
+      border-radius:6px;
+      font-size:15px;
+      box-sizing:border-box;
+    }
+    textarea{ resize: vertical; }
+
+    .radio-group{ margin:8px 0 4px; }
+    .radio-group input{ margin-right:6px; }
+    .radio-group label{ display:inline-block; margin-right:14px; font-weight:400; }
+
+    /* ===== Botones (colores) ===== */
+    button{
+      display:block;
+      width:100%;
+      margin:20px 0;
+      background-color:#5c6bc0;
+      color:#fff;
+      border:none;
+      padding:15px 20px;
+      border-radius:6px;
+      font-size:16px;
+      cursor:pointer;
+      transition: background-color .2s, transform .2s;
+    }
+    button:hover{ background-color:#4a5ab1; transform: translateY(-2px); }
+
+    /* NUEVO: ancho reducido (~75% del card), centrado */
+    .btn-slim{
+      width: min(640px, 75%);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ======= Bloques informativos y tabla de paquetes ======= */
+    .info-box{
+      background:#f4f6ff;
+      border:1px solid #dfe3ff;
+      color:#2c3a6d;
+      padding:12px 14px;
+      border-radius:8px;
+      margin-bottom:16px;
+      line-height:1.5;
+    }
+    .token-packages{ margin: 12px 0 6px; overflow-x:auto; }
+    .token-table{ width:100%; border-collapse: collapse; margin-top:6px; }
+    .token-table th, .token-table td{
+      border:1px solid #eee; padding:10px 8px; text-align:center; font-size:14px;
+    }
+    .token-table th{ background:#fafafa; font-weight:700; }
+    .muted{ color:#666; font-size:14px; margin-top:-4px; }
+    .inline{ display:flex; gap:12px; align-items:flex-start; }
+    .inline > *{ flex:1; }
+    .hint{ font-size:14px; color:#2e7d32; margin-top:4px; }
+    .warn{ font-size:14px; color:#c62828; margin-top:4px; }
+    .small{ font-size:13px; color:#555; }
+    .readonly{ background:#f6f6f6; }
+
+    /* ===== Banner fijo (mismo ancho que el card) ===== */
+    .app-banner{
+      position: fixed; top: 0; left: 0; right: 0; height: var(--banner-h);
+      z-index: 9999; background: transparent;
+    }
+    .app-banner .banner-box{
+      height: 100%;
+      width: min(calc(var(--container-w) + var(--container-pad)*2 + var(--container-bl)),
+                 calc(100% - var(--page-sidepad)*2));
+      margin: 0 auto;
+      background: var(--banner-bg);
+      border-bottom: 1px solid rgba(0,0,0,.06);
       border-radius: 10px;
-      border-left: 4px solid #5c6bc0;
+      transition: background-color .2s ease;
+      display: flex; align-items: center;
     }
-    .back-button {
-      display: inline-block;
-      margin-bottom: 20px;
-      text-decoration: none;
-      font-size: 16px;
-      color: #5c6bc0;
-      padding: 8px 12px;
-      border: 1px solid #5c6bc0;
-      border-radius: 5px;
-      transition: background-color 0.3s, color 0.3s;
+    .app-banner .banner-box:hover,
+    .app-banner .banner-box:focus-within{ background: var(--banner-bg-hover); }
+    .app-banner .banner-inner{
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+      gap: 8px; width: 100%; padding: 0 12px;
     }
-    .back-button:hover {
-      background-color: #5c6bc0;
-      color: #ffffff;
+    .banner-back{ justify-self: start; }
+    .banner-title{ justify-self: center; font-weight: 700; color: #233247; }
+    .banner-logo{ justify-self: end; display: inline-flex; align-items: center; }
+    .banner-logo img{ width: 52px; height: auto; display: block; }
+
+    /* botón Volver del banner */
+    .back-button{
+      display:inline-block; text-decoration:none; font-size:14px; color:#5c6bc0;
+      padding:8px 12px; border:1px solid #5c6bc0; border-radius:6px;
+      transition: background-color .2s, color .2s;
     }
-    h1 {
-      text-align: center;
-      color: #000;
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 20px;
+    .back-button:hover{ background:#5c6bc0; color:#fff; }
+
+    /* ===== LEGAL FUERA DEL CARD ===== */
+    .legal-outside{
+      margin: 18px auto 24px;
+      padding: 10px 12px;
+      max-width: calc(var(--container-w) + var(--container-pad)*2 + var(--container-bl));
+      text-align: center; color: #666; font-size: 14px; line-height: 1.35;
     }
-    label {
-      display: block;
-      margin: 10px 0;
-      color: #003366;
-      font-size: 16px;
-      font-weight: 400;
-    }
-    input[type="text"],
-    input[type="email"],
-    input[type="number"],
-    textarea {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 20px;
-      border: 2px solid #dddddd;
-      border-radius: 5px;
-      box-sizing: border-box;
-      transition: border-color 0.3s;
-      font-size: 16px;
-    }
-    input[type="text"]:focus,
-    input[type="email"]:focus,
-    input[type="number"]:focus,
-    textarea:focus {
-      outline: none;
-      border-color: #7da2a9;
-    }
-    /* Estilos para los radio buttons */
-    .radio-group {
-      margin-bottom: 20px;
-    }
-    .radio-group input[type="radio"] {
-      margin-right: 5px;
-    }
-    .radio-group label {
-      display: inline-block;
-      margin-right: 15px;
-      font-weight: 400;
-    }
-    button {
-      display: block;
-      width: 100%;
-      margin: 20px 0;
-      background-color: #5c6bc0;
-      color: white;
-      border: none;
-      padding: 15px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background-color 0.3s, transform 0.3s;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #3f51b5;
-      transform: translateY(-2px);
-    }
-    /* Se puede ajustar el color si se desea */
-    #confirmar_datos {
-      background-color: #4CAF50;
-    }
-    #confirmar_datos:hover {
-      background-color: #388E3C;
-    }
-    #realizar_pago {
-      background-color: #f44336;
-    }
-    #realizar_pago:hover {
-      background-color: #d32f2f;
-    }
-    textarea {
-      background-color: #fafafa;
-      border: 2px solid #e0e0e0;
-      resize: none;
-    }
-    @media (max-width: 768px) {
-      .container {
-        width: 100%;
-        padding: 10px;
-      }
-      h1 {
-        font-size: 20px;
-      }
-      label, button {
-        font-size: 14px;
-      }
+
+    @media (max-width:768px){
+      .container{ padding:12px; }
+      h1, .banner-title{ font-size:20px; }
+      label, button{ font-size:14px; }
+      .inline{ flex-direction:column; }
+      .btn-slim{ width: 100%; }
     }
   </style>
 </head>
 <body>
+
+  <!-- ===== BANNER SUPERIOR ===== -->
+  <header class="app-banner" role="banner">
+    <div class="banner-box">
+      <div class="banner-inner">
+        <a href="#" class="back-button banner-back" onclick="history.back(); return false;">&larr; Volver</a>
+        <div class="banner-title">Portal de Pagos</div>
+        <a href="interfaz_inicio_s.html" class="banner-logo" aria-label="Ir al inicio">
+          <img src="LogoCitasYa.png" alt="Citas Ya">
+        </a>
+      </div>
+    </div>
+  </header>
+
   <div class="container">
-    <!-- Botón Volver -->
-    <a href="interfaz_organizar_agenda.html" class="back-button">&larr; Volver</a>
-    
     <h1>Portal de Pagos</h1>
-    
+
+    <!-- Explicación de tokens -->
+    <div class="info-box">
+      <strong>Ahora pagas con <u>tokens</u>:</strong><br>
+      • Cita de <b>30 min</b> = <b>1 token</b> &nbsp;&nbsp;• Cita de <b>60 min</b> = <b>2 tokens</b>.<br>
+      <b>Paquetes disponibles:</b> 50, 100, 150 y 200 tokens. También puedes elegir una cantidad exacta. <br>
+      Precio base: <b>$400 COP/token</b>. En paquetes el precio por token baja progresivamente hasta <b>$200 COP/token</b> en 200 tokens.
+    </div>
+
+    <!-- ====== Tabla de precios por paquetes (ANTES del selector) ====== -->
+    <div class="token-packages">
+      <table class="token-table" id="tabla_paquetes">
+        <thead>
+          <tr>
+            <th>Paquete</th>
+            <th>Precio por token</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody><!-- filas generadas por JS --></tbody>
+      </table>
+    </div>
+
+    <!-- Selector de paquetes sugeridos (dropdown) -->
+    <label for="tokens_paquete">Paquetes sugeridos</label>
+    <select id="tokens_paquete"><!-- se llena por JS --></select>
+    <p class="muted small">Al elegir un paquete, se establece la cantidad de tokens y el precio total del paquete.</p>
+
+    <div class="inline">
+      <div>
+        <label for="tokens_cantidad">Cantidad de tokens</label>
+        <input type="number" id="tokens_cantidad" min="1" step="1" placeholder="Ej: 120">
+        <p id="precio_unit_info" class="small muted">Precio por token aplicado: —</p>
+
+        <!-- Sugerencia + opción Plus (solo > 200 tokens) -->
+        <div id="suscripcion_wrap" style="display:none;">
+          <p id="suscripcion_msg" class="warn" style="margin-bottom:6px;">
+            Sugerencia: para más de <b>200</b> tokens, te conviene <b>Citas Ya Plus</b>.
+          </p>
+          <label class="small" style="display:flex;align-items:center;gap:8px;">
+            <input type="checkbox" id="plus_select">
+            <span><b>Citas Ya Plus</b> — $40.000 COP/mes (tokens ilimitados)</span>
+          </label>
+        </div>
+      </div>
+      <div>
+        <label for="valor_pago">Valor a pagar (COP)</label>
+        <input type="number" id="valor_pago" class="readonly" readonly placeholder="Se calculará automáticamente">
+        <p class="small muted">La cantidad libre usa el <b>precio por token del paquete anterior</b> (ej: 120 tokens usan el precio por token del paquete de 100).</p>
+      </div>
+    </div>
+
+    <!-- Datos del comprador -->
     <label for="nombre_completo">Nombre completo</label>
     <input type="text" id="nombre_completo" placeholder="Ej: Juan Uribe">
-    
+
     <label for="nombre_barberia">Nombre de la barbería</label>
     <input type="text" id="nombre_barberia" placeholder="Ej: Barbería XYZ">
-    
-    <label for="cantidad_barberos">Cantidad de barberos inscritos</label>
-    <input type="number" id="cantidad_barberos" placeholder="Ej: 2" min="1">
-    
-    <label for="direccion">Dirección</label>
-    <input type="text" id="direccion" placeholder="Ej: Calle 123 #45-67">
-    
+
+    <!-- Datos de contacto -->
     <label for="correo">Correo electrónico</label>
     <input type="email" id="correo" placeholder="Ej: juanb@citasya.com">
-    
-    <label for="valor_pago">Valor a pagar</label>
-    <input type="number" id="valor_pago" placeholder="$40,000 + $15,000 barbero adicional" min="0">
-    
+
+    <!-- Método de pago: solo PayU -->
     <label>Método de pago</label>
     <div class="radio-group">
-      <input type="radio" name="metodo_pago" id="debito" value="Débito">
-      <label for="debito">Débito</label>
-      <input type="radio" name="metodo_pago" id="credito" value="Crédito">
-      <label for="credito">Crédito</label>
+      <input type="radio" name="metodo_pago" id="payu" value="PayU" checked>
+      <label for="payu">PayU</label>
     </div>
-    
-    <button id="confirmar_datos">Confirmar datos</button>
-    
-    <textarea id="resumen" rows="4" readonly placeholder="Resumen de datos..."></textarea>
-    
-    <button id="realizar_pago">Realizar pago</button>
+
+    <!-- Botones reducidos -->
+    <button id="confirmar_datos" class="btn-slim">Confirmar datos</button>
+
+    <!-- Resumen (AUMENTADO 50%) -->
+    <textarea id="resumen" rows="6" class="readonly" readonly placeholder="Resumen de datos..."></textarea>
+
+    <button id="realizar_pago" class="btn-slim">Realizar pago</button>
   </div>
-  
+
+  <!-- ===== LEGAL FUERA DEL CARD ===== -->
+  <div class="legal-outside">
+    Todos los derechos reservados © 2025<br>
+    Citas Ya S.A.S - Nit 810.000.000-0
+  </div>
+
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Botón para confirmar datos
-      document.getElementById('confirmar_datos').addEventListener('click', function(e) {
+    // ====== PRECIOS POR PAQUETE (nuevo esquema) ======
+    const BASE_TIER = { qty: 1, unit: 400 }; // cantidad libre por debajo del primer paquete
+    // Paquetes: 50:380 | 100:320 | 150:260 | 200:200
+    const TIERS = [
+      BASE_TIER,
+      { qty: 50,  unit: 380 },
+      { qty: 100, unit: 320 },
+      { qty: 150, unit: 260 },
+      { qty: 200, unit: 200 },
+    ];
+    const PLUS_PRICE = 40000; // Citas Ya Plus
+
+    const fmt = n => Number(n || 0).toLocaleString('es-CO');
+
+    function getPrevTier(cantidad){
+      let chosen = BASE_TIER;
+      for (const t of TIERS){
+        if (cantidad >= t.qty) chosen = t;
+      }
+      return chosen;
+    }
+
+    function renderPaquetes(){
+      const tbody = document.querySelector('#tabla_paquetes tbody');
+      tbody.innerHTML = '';
+      const sel = document.getElementById('tokens_paquete');
+      sel.innerHTML = '<option value="">-- Selecciona un paquete --</option>';
+
+      TIERS.forEach(t => {
+        if (t.qty === 1) return; // no mostramos el base de 1
+        const total = t.qty * t.unit;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><b>${t.qty} tokens</b></td>
+          <td>$${fmt(t.unit)} COP</td>
+          <td><b>$${fmt(total)} COP</b></td>
+        `;
+        tbody.appendChild(tr);
+
+        const opt = document.createElement('option');
+        opt.value = t.qty;
+        opt.textContent = `${t.qty} tokens — $${fmt(total)} COP ( $${fmt(t.unit)}/token )`;
+        sel.appendChild(opt);
+      });
+    }
+
+    function togglePlusUI(show){
+      const wrap = document.getElementById('suscripcion_wrap');
+      wrap.style.display = show ? 'block' : 'none';
+      if (!show){
+        const plus = document.getElementById('plus_select');
+        if (plus) plus.checked = false;
+      }
+    }
+
+    function calcularDesdeCantidad(){
+      const cantidad = parseInt(document.getElementById('tokens_cantidad').value || '0', 10);
+      const valorInput = document.getElementById('valor_pago');
+      const info = document.getElementById('precio_unit_info');
+      const plus = document.getElementById('plus_select');
+
+      if (isNaN(cantidad) || cantidad < 1){
+        valorInput.value = '';
+        info.textContent = 'Precio por token aplicado: —';
+        togglePlusUI(false);
+        return;
+      }
+
+      togglePlusUI(cantidad > 200);
+
+      if (plus && plus.checked){
+        valorInput.value = PLUS_PRICE;
+        info.textContent = 'Plan seleccionado: Citas Ya Plus';
+        return;
+      }
+
+      const tier = getPrevTier(cantidad);
+      const total = cantidad * tier.unit;
+      valorInput.value = total;
+      info.textContent = `Precio por token aplicado: $${fmt(tier.unit)} COP (según paquete de ${tier.qty})`;
+    }
+
+    function onElegirPaquete(){
+      const sel = document.getElementById('tokens_paquete');
+      const valorInput = document.getElementById('valor_pago');
+      const info = document.getElementById('precio_unit_info');
+      const plus = document.getElementById('plus_select');
+
+      const qty = parseInt(sel.value || '0', 10);
+      if (!qty) return;
+
+      if (plus && plus.checked){
+        plus.checked = false;
+        enableTokenInputs(true);
+      }
+
+      const tier = TIERS.find(t => t.qty === qty);
+      if (!tier) return;
+
+      document.getElementById('tokens_cantidad').value = qty;
+      valorInput.value = qty * tier.unit;
+      info.textContent = `Precio por token aplicado: $${fmt(tier.unit)} COP (paquete de ${tier.qty})`;
+      togglePlusUI(qty > 200);
+    }
+
+    function enableTokenInputs(enable){
+      document.getElementById('tokens_cantidad').disabled = !enable;
+      document.getElementById('tokens_paquete').disabled = !enable;
+    }
+
+    function onPlusToggle(){
+      const plus = document.getElementById('plus_select');
+      const valorInput = document.getElementById('valor_pago');
+      const info = document.getElementById('precio_unit_info');
+      if (plus.checked){
+        enableTokenInputs(false);
+        valorInput.value = PLUS_PRICE;
+        info.textContent = 'Plan seleccionado: Citas Ya Plus';
+      } else {
+        enableTokenInputs(true);
+        calcularDesdeCantidad();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+      renderPaquetes();
+
+      document.getElementById('tokens_cantidad')?.addEventListener('input', calcularDesdeCantidad);
+      document.getElementById('tokens_paquete')?.addEventListener('change', onElegirPaquete);
+      document.getElementById('plus_select')?.addEventListener('change', onPlusToggle);
+
+      document.getElementById('confirmar_datos').addEventListener('click', function(e){
         e.preventDefault();
-        // Recopilamos datos
-        var nombre = document.getElementById('nombre_completo').value;
-        var barberia = document.getElementById('nombre_barberia').value;
-        var cantidad = document.getElementById('cantidad_barberos').value;
-        var direccion = document.getElementById('direccion').value;
-        var correo = document.getElementById('correo').value;
-        var valor = document.getElementById('valor_pago').value;
-        // Método de pago: obtenemos el radio seleccionado
-        var metodoPago = document.querySelector('input[name="metodo_pago"]:checked');
-        var metodo = metodoPago ? metodoPago.value : "No seleccionado";
-        
-        // Construimos el resumen
-        var resumen = "Nombre completo: " + nombre + "\n";
-        resumen += "Barbería: " + barberia + "\n";
-        resumen += "Cantidad de barberos: " + cantidad + "\n";
-        resumen += "Dirección: " + direccion + "\n";
-        resumen += "Correo: " + correo + "\n";
-        resumen += "Valor a pagar: " + valor + "\n";
-        resumen += "Método de pago: " + metodo;
-        
+
+        const nombre    = document.getElementById('nombre_completo').value;
+        const barberia  = document.getElementById('nombre_barberia').value;
+        const cantidad  = parseInt(document.getElementById('tokens_cantidad').value || '0', 10);
+        const correo    = document.getElementById('correo').value;
+        const valor     = document.getElementById('valor_pago').value;
+        const plus      = document.getElementById('plus_select').checked;
+
+        const metodoEl = document.querySelector('input[name="metodo_pago"]:checked');
+        const metodo   = metodoEl ? metodoEl.value : 'No seleccionado';
+
+        const tierUsado = getPrevTier(isNaN(cantidad)?0:cantidad);
+
+        let resumen  = "Resumen de pago\n";
+        resumen     += "---------------------------\n";
+        resumen     += `Nombre: ${nombre}\n`;
+        resumen     += `Barbería: ${barberia}\n`;
+        resumen     += `Correo: ${correo}\n`;
+
+        if (plus){
+          resumen += `Plan: Citas Ya Plus (tokens ilimitados)\n`;
+          resumen += `Valor a pagar: $${fmt(parseInt(PLUS_PRICE,10))} COP\n`;
+        } else {
+          resumen += `Tokens: ${isNaN(cantidad)?0:cantidad} (precio por token aplicado: $${fmt(tierUsado.unit)} COP)\n`;
+          resumen += `Valor a pagar: $${fmt(parseInt(valor||'0',10))} COP\n`;
+          if (cantidad > 200){
+            resumen += `\nSugerencia: considera Citas Ya Plus por $${fmt(PLUS_PRICE)} COP/mes (tokens ilimitados).`;
+          }
+        }
+
+        resumen     += `Método de pago: ${metodo}\n`;
         document.getElementById('resumen').value = resumen;
       });
-      
-      // Botón para realizar pago
-      document.getElementById('realizar_pago').addEventListener('click', function(e) {
+
+      document.getElementById('realizar_pago').addEventListener('click', function(e){
         e.preventDefault();
+        if (!document.getElementById('valor_pago').value){
+          alert("Por favor, ingresa o selecciona la cantidad de tokens (o elige Citas Ya Plus) para calcular el valor a pagar.");
+          return;
+        }
         alert("Pago realizado exitosamente");
       });
     });
