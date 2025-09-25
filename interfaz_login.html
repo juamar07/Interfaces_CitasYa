@@ -2,171 +2,89 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Iniciar Sesión</title>
+  <title>Iniciar sesión</title>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    /* ===== Variables de layout (coinciden con el card) ===== */
     :root{
-      --container-w: 800px;          /* max-width de .container */
+      --container-w: 800px;
       --container-pad: 20px;
       --container-bl: 4px;
-
       --banner-h: 64px;
       --page-sidepad: 16px;
-      --banner-bg: #e6e9ee;          /* gris nardo */
+      --banner-bg: #e6e9ee;
       --banner-bg-hover: #d7dbe3;
+      --btn-blue: #5c6bc0;
+      --btn-blue-hover:#3f51b5;
+      --btn-green:#66BB6A;
     }
+    body{
+      font-family:'Open Sans', sans-serif; background:#eee; margin:0; padding:20px; color:#333;
+      padding-top: calc(var(--banner-h) + 8px);
+    }
+    .container{
+      max-width:var(--container-w); margin:auto; padding:var(--container-pad); background:#fff;
+      box-shadow:0 4px 8px rgba(0,0,0,.05); border-radius:10px; border-left:var(--container-bl) solid var(--btn-blue);
+    }
+    h1{ text-align:center; color:#000; font-size:24px; font-weight:600; margin-bottom:20px; }
+    label{ display:block; margin:10px 0; color:#003366; font-size:16px; font-weight:400; }
+    input{
+      width:100%; padding:12px; margin-bottom:20px; border:2px solid #ddd; border-radius:5px; box-sizing:border-box; font-size:16px;
+      transition:border-color .3s;
+    }
+    input:focus{ outline:none; border-color:#7da2a9; }
+    .hint{ color:#666; margin-top:-12px; margin-bottom:16px; font-size:13px; }
+    .error{ color:#b00020; font-size:13px; margin-top:-12px; margin-bottom:16px; display:none; }
 
-    /* ===== Base ===== */
-    body {
-      font-family: 'Open Sans', sans-serif;
-      background-color: #eeeeee;
-      margin: 0;
-      padding: 20px;
-      color: #333;
-      padding-top: calc(var(--banner-h) + 8px); /* espacio para banner fijo */
+    button{
+      display:block; width:100%; margin:10px 0; border:none; padding:15px 20px; border-radius:5px;
+      cursor:pointer; font-weight:600; transition: background-color .3s, transform .3s; color:#fff; font-size:16px;
     }
-    .container {
-      max-width: var(--container-w);
-      margin: auto;
-      padding: var(--container-pad);
-      background-color: #ffffff;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-      border-radius: 10px;
-      border-left: var(--container-bl) solid #5c6bc0;
-    }
+    .btn-blue{ background:var(--btn-blue); }
+    .btn-blue:hover{ background:var(--btn-blue-hover); transform: translateY(-2px); }
+    .btn-slim{ width:min(640px,75%); margin-left:auto; margin-right:auto; }
 
-    h1 {
-      text-align: center;
-      color: #000;
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 20px;
-    }
-    label {
-      display: block;
-      margin: 10px 0;
-      color: #003366;
-      font-size: 16px;
-      font-weight: 400;
-    }
-    input[type="text"], input[type="password"] {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 12px;
-      border: 2px solid #dddddd;
-      border-radius: 5px;
-      box-sizing: border-box;
-      transition: border-color 0.3s;
-      font-size: 16px;
-    }
-    input[type="text"]:focus, input[type="password"]:focus {
-      outline: none;
-      border-color: #7da2a9;
-    }
-
-    /* ===== Botones ===== */
-    button {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-      border: none;
-      padding: 15px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background-color 0.3s, transform 0.3s;
-      color: white;
-      font-size: 16px;
-    }
-    .btn-inicio { background-color: #5c6bc0; }
-    .btn-inicio:hover { background-color: #3f51b5; transform: translateY(-2px); }
-
-    /* Botón reducido (~75% del ancho, centrado) */
-    .btn-slim{
-      width: min(640px, 75%);
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    /* Mensaje de feedback */
-    .msg {
-      text-align: center;
-      font-size: 14px;
-      margin-top: 6px;
-      color: #c62828; /* rojo error */
-      min-height: 18px; /* evita salto de layout */
-    }
-
-    p {
-      text-align: center;
-      font-size: 16px;
-      color: #003366;
-      font-weight: 400;
-    }
-    p a { color: #5c6bc0; text-decoration: none; }
-    p a:hover { text-decoration: underline; }
-
-    /* ===== Banner fijo (mismo ancho que el card) ===== */
     .app-banner{
-      position: fixed; top: 0; left: 0; right: 0; height: var(--banner-h);
-      z-index: 9999; background: transparent;
+      position:fixed; top:0; left:0; right:0; height:var(--banner-h); z-index:9999; background:transparent;
     }
     .app-banner .banner-box{
-      height: 100%;
-      width: min(calc(var(--container-w) + var(--container-pad)*2 + var(--container-bl)),
-                 calc(100% - var(--page-sidepad)*2));
-      margin: 0 auto;
-      background: var(--banner-bg);
-      border-bottom: 1px solid rgba(0,0,0,.06);
-      border-radius: 10px;
-      transition: background-color .2s ease;
-      display: flex; align-items: center;
+      height:100%;
+      width:min(calc(var(--container-w) + var(--container-pad)*2 + var(--container-bl)),
+                calc(100% - var(--page-sidepad)*2));
+      margin:0 auto; background:var(--banner-bg); border-bottom:1px solid rgba(0,0,0,.06); border-radius:10px;
+      transition: background-color .2s; display:flex; align-items:center;
     }
-    .app-banner .banner-box:hover,
-    .app-banner .banner-box:focus-within{ background: var(--banner-bg-hover); }
-
-    .app-banner .banner-inner{
-      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
-      gap: 8px; width: 100%; padding: 0 12px;
-    }
-    .banner-back{ justify-self: start; }
-    .banner-title{ justify-self: center; font-weight: 700; color: #233247; }
-    .banner-logo{ justify-self: end; display: inline-flex; align-items: center; }
-    .banner-logo img{ width: 52px; height: auto; display: block; }
-
-    /* botón volver del banner */
+    .app-banner .banner-box:hover, .app-banner .banner-box:focus-within{ background:var(--banner-bg-hover); }
+    .app-banner .banner-inner{ display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:8px; width:100%; padding:0 12px; }
+    .banner-back{ justify-self:start; }
+    .banner-title{ justify-self:center; font-weight:700; color:#233247; }
+    .banner-logo{ justify-self:end; display:inline-flex; align-items:center; }
+    .banner-logo img{ width:52px; height:auto; display:block; }
     .back-button{
-      display:inline-block; text-decoration:none; font-size:14px; color:#5c6bc0;
-      padding:8px 12px; border:1px solid #5c6bc0; border-radius:6px;
-      transition: background-color .2s, color .2s;
+      display:inline-block; text-decoration:none; font-size:14px; color:var(--btn-blue);
+      padding:8px 12px; border:1px solid var(--btn-blue); border-radius:6px; transition: background-color .2s, color .2s;
     }
-    .back-button:hover{ background:#5c6bc0; color:#fff; }
+    .back-button:hover{ background:var(--btn-blue); color:#fff; }
 
-    /* ===== LEGAL FUERA DE LA PÁGINA ===== */
     .legal-outside{
-      margin: 18px auto 24px;
-      padding: 10px 12px;
+      margin:18px auto 24px; padding:10px 12px;
       max-width: calc(var(--container-w) + var(--container-pad)*2 + var(--container-bl));
-      text-align: center; color: #666; font-size: 14px; line-height: 1.35;
+      text-align:center; color:#666; font-size:14px; line-height:1.35;
     }
-
-    @media (max-width: 768px) {
-      .container { width: 100%; padding: 10px; }
-      h1, .banner-title { font-size: 20px; }
-      label, button, p { font-size: 14px; }
-      .btn-slim{ width: 100%; }
+    @media (max-width:768px){
+      .container{ width:100%; padding:10px; }
+      h1, .banner-title{ font-size:20px; }
+      label, button{ font-size:14px; }
+      .btn-slim{ width:100%; }
     }
   </style>
 </head>
 <body>
-
-  <!-- ===== BANNER SUPERIOR ===== -->
+  <!-- Banner -->
   <header class="app-banner" role="banner">
     <div class="banner-box">
       <div class="banner-inner">
         <a href="#" class="back-button banner-back" onclick="history.back(); return false;">&larr; Volver</a>
-        <div class="banner-title">Iniciar Sesión</div>
+        <div class="banner-title">Iniciar sesión</div>
         <a href="interfaz_inicio_s.html" class="banner-logo" aria-label="Ir al inicio">
           <img src="LogoCitasYa.png" alt="Citas Ya">
         </a>
@@ -175,66 +93,94 @@
   </header>
 
   <div class="container">
-    <h1>Iniciar Sesión</h1>
+    <h1>Iniciar sesión</h1>
 
-    <form id="loginForm" autocomplete="off">
-      <label for="usuario">Usuario</label>
-      <input type="text" id="usuario" required>
-      <label for="contrasena">Contraseña</label>
-      <input type="password" id="contrasena" required>
-      <button type="submit" class="btn-inicio btn-slim">Iniciar Sesión</button>
-      <div id="login_msg" class="msg"></div>
+    <form id="loginForm" novalidate>
+      <label for="ident">Correo, usuario o número</label>
+      <input id="ident" type="text" autocomplete="username" required>
+      <div class="hint">Puedes usar cualquiera de tus datos registrados.</div>
+      <div id="errIdent" class="error">Ingresa un dato válido.</div>
+
+      <label for="pass">Contraseña</label>
+      <input id="pass" type="password" autocomplete="current-password" required>
+      <div id="errPass" class="error">Ingresa tu contraseña.</div>
+
+      <button type="submit" class="btn-blue btn-slim">Iniciar Sesión</button>
     </form>
 
-    <p>¿Aún no tienes cuenta? <a href="interfaz_registro_cliente.html">Regístrate</a></p>
+    <p style="text-align:center; color:#003366;">
+      ¿No tienes cuenta? <a href="interfaz_registro_cliente.html">Regístrate</a>
+    </p>
   </div>
 
-  <!-- ===== LEGAL FUERA DE LA PÁGINA ===== -->
   <div class="legal-outside">
     Todos los derechos reservados © 2025<br>
     Citas Ya S.A.S - Nit 810.000.000-0
   </div>
 
   <script>
-    /*
-      Pequeña "base de datos" en memoria para pruebas locales:
-      - username y password exactos según perfíl
-      - redirect indica la interfaz destino tras login
-    */
-    const USERS = [
-      { username: 'Cliente',  password: 'cliente',  role: 'cliente', redirect: 'interfaz_agendar.html' },
-      { username: 'Barbero',  password: 'barbero',  role: 'barbero', redirect: 'interfaz_organizar_agenda.html' },
-      { username: 'Admin',    password: 'admin',    role: 'admin',   redirect: 'interfaz_admin.html' }
-    ];
+    // ======= Almacenamiento =======
+    const LS_USERS = 'cy_users';
+    const LS_CURRENT = 'cy_current_user';
 
-    const form = document.getElementById('loginForm');
-    const msg  = document.getElementById('login_msg');
+    const loadUsers = () => {
+      try { return JSON.parse(localStorage.getItem(LS_USERS)) || []; }
+      catch (_) { return []; }
+    };
+    const saveCurrent = (u) => localStorage.setItem(LS_CURRENT, JSON.stringify(u));
 
-    function findUser(u){
-      // Búsqueda exacta por username tal como lo definiste (respetando mayúsculas/minúsculas)
-      return USERS.find(x => x.username === u);
-    }
+    // Normalizadores
+    const normEmail = s => (s||'').trim().toLowerCase();
+    const normUser  = s => (s||'').trim().toLowerCase();
+    const normPhone = s => (s||'').replace(/\D+/g, '');
 
-    form.addEventListener('submit', function(e){
+    // Detección de tipo
+    const detectType = v => {
+      const s = v.trim();
+      if(!s) return 'none';
+      if(s.includes('@')) return 'email';
+      if(/^\d{7,15}$/.test(s.replace(/\D+/g,''))) return 'phone';
+      return 'user';
+    };
+
+    const $ = s => document.querySelector(s);
+    const show = (id, on=true)=>{ const el=document.getElementById(id); if(el) el.style.display = on?'block':'none'; };
+
+    document.getElementById('loginForm').addEventListener('submit', (e)=>{
       e.preventDefault();
-      msg.textContent = '';
+      const identRaw = $('#ident').value || '';
+      const pass = $('#pass').value || '';
 
-      const u = document.getElementById('usuario').value.trim();
-      const p = document.getElementById('contrasena').value.trim();
+      let ok = true;
+      if(!identRaw.trim()){ show('errIdent', true); ok=false; } else show('errIdent', false);
+      if(!pass){ show('errPass', true); ok=false; } else show('errPass', false);
+      if(!ok) return;
 
-      if (!u || !p){
-        msg.textContent = 'Por favor completa usuario y contraseña.';
+      const users = loadUsers();
+      const kind = detectType(identRaw);
+      let user = null;
+
+      if(kind === 'email'){
+        const email = normEmail(identRaw);
+        user = users.find(u => u.email === email);
+      }else if(kind === 'phone'){
+        const phone = normPhone(identRaw);
+        user = users.find(u => u.phone === phone);
+      }else{ // username
+        const username = normUser(identRaw);
+        user = users.find(u => u.username === username);
+      }
+
+      if(!user || user.password !== pass){
+        alert('Credenciales inválidas. Verifica tus datos.');
         return;
       }
 
-      const user = findUser(u);
-      if (!user || user.password !== p){
-        msg.textContent = 'Usuario o contraseña incorrectos.';
-        return;
-      }
+      // Guardar sesión sencilla (solo demo/front-end)
+      saveCurrent({ id:user.id, name:user.name, username:user.username, email:user.email, phone:user.phone, loggedAt: Date.now() });
 
-      // OK → redirige según perfil
-      window.location.href = user.redirect;
+      // Redirigir a la experiencia de cliente (agendar)
+      window.location.href = 'interfaz_agendar.html';
     });
   </script>
 </body>
