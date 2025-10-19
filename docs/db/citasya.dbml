@@ -1,0 +1,390 @@
+Project CitasYa {
+  database_type: "MySQL"
+}
+
+/* =========================
+   USUARIOS y ROLES
+   ========================= */
+Table roles {
+  id                serial        [pk]
+  nombre            varchar(120)  [not null]
+  creado_en         timestamptz   [not null, default: `now()`]
+  actualizado_en    timestamptz   [not null, default: `now()`]
+}
+
+Table usuarios {
+  id                serial        [pk]
+  nombre_completo   varchar(120)  [not null]
+  correo            varchar(190)  [unique]         // login 1
+  telefono          varchar(20)   [unique]         // login 2
+  usuario           varchar(50)   [unique]         // login 3
+  hash_contrasena   varchar(255)  [not null]
+  rol_id            int           [not null]
+  activo            boolean       [not null, default: true]
+  creado_en         timestamptz   [not null, default: `now()`]
+  actualizado_en    timestamptz   [not null, default: `now()`]
+  Note: 'Una cuenta puede ser cliente, barbero, dueño o admin (rol principal).'
+}
+
+Table administrador {
+  id                   serial        [pk]
+  usuario_id           int           [not null]
+  comentarios          text
+  estadisticas_id      int           [not null]
+  creado_en            timestamptz   [not null, default: `now()`]
+  actualizado_en       timestamptz   [not null, default: `now()`]
+}
+
+/* =========================
+   NEGOCIOS / SERVICIOS / PERSONAL
+   ========================= */
+
+Table negocios {
+  id                serial        [pk]
+  nombre            varchar(140)  [not null]
+  tokens            int           [not null, default: 0]
+  direccion         varchar(240)
+  latitud           decimal(10,7)
+  longitud          decimal(10,7)
+  activo            boolean       [not null, default: false]
+  creado_en         timestamptz   [not null, default: `now()`]
+  actualizado_en    timestamptz   [not null, default: `now()`]
+
+  indexes {
+    (activo)
+  }
+}
+
+Table personal {
+  id                serial        [pk]
+  negocio_id        int           [not null]
+  usuario_id        int
+  propietario       boolean       [not null, default: false]
+  nombre_publico    varchar(120)  [not null]
+  activo            boolean       [not null, default: true]
+  creado_en         timestamptz   [not null, default: `now()`]
+  actualizado_en    timestamptz   [not null, default: `now()`]
+
+  indexes {
+    (negocio_id, activo)
+    (usuario_id)
+  }
+}
+
+Table servicios {
+  id                serial        [pk]
+  negocio_id        int           [not null]
+  nombre            varchar(120)  [not null]
+  duracion_min      int           [not null]        // 20..120 en pasos de 10
+  precio_cop        numeric(12,2) [not null]
+  costo_tokens      int           [not null, default: 1]
+  activo            boolean       [not null, default: true]
+  orden             int           [not null, default: 0]
+  creado_en         timestamptz   [not null, default: `now()`]
+  actualizado_en    timestamptz   [not null, default: `now()`]
+
+  indexes {
+    (negocio_id, nombre) [unique]
+    (negocio_id, activo)
+  }
+}
+
+Table personal_servicio {
+  personal_id       int  [not null]
+  servicio_id       int  [not null]
+  creado_en         timestamptz   [not null, default: `now()`]
+  actualizado_en    timestamptz   [not null, default: `now()`]
+  primary key (personal_id, servicio_id)
+}
+
+/* =========================
+   AGENDA (plantillas semanales por rangos)
+   ========================= */
+Table conjunto_horario {
+  id                serial       [pk]
+  negocio_id        int          [not null]
+  personal_id       int          [not null]
+  fecha_inicio      date         [not null]
+  fecha_fin         date         [not null]
+  creado_por        int
+  creado_en         timestamptz   [not null, default: `now()`]
+  actualizado_en    timestamptz   [not null, default: `now()`]
+
+  indexes {
+    (personal_id, fecha_inicio, fecha_fin)
+  }
+
+  Note: 'Cada conjunto aplica un patrón semanal al rango [fecha_inicio..fecha_fin].'
+}
+
+Table dias_semana {
+  id                serial        [pk]
+  nombre            varchar(120)  [not null]
+  creado_en         timestamptz   [not null, default: `now()`]
+  actualizado_en    timestamptz   [not null, default: `now()`]
+
+}
+
+Table dia_horario {
+  id                    serial       [pk]
+  conjunto_horario_id   int          [not null]
+  dia_id                int   [not null]
+  trabaja               boolean      [not null, default: false]
+  hora_inicio           time
+  hora_fin              time
+  almuerzo_inicio       time
+  almuerzo_fin          time
+  creado_en         timestamptz   [not null, default: `now()`]
+  actualizado_en    timestamptz   [not null, default: `now()`]
+
+  indexes {
+    (conjunto_horario_id, dia_id) [unique]
+  }
+
+  Note: 'Si trabaja=true, hora_inicio < hora_fin. Almuerzo opcional dentro del turno.'
+}
+
+/* =========================
+   CITAS, CANCELACIONES y REAGENDOS
+   ========================= */
+Table estado_cita {
+  id                serial        [pk]
+  nombre            varchar(120)  [not null]
+  creado_en         timestamptz   [not null, default: `now()`]
+  actualizado_en    timestamptz   [not null, default: `now()`]
+}
+
+Table citas {
+  id                   serial        [pk]
+  negocio_id           int           [not null]
+  personal_id          int           [not null]
+  servicio_id          int           [not null]
+  usuario_cliente_id   int
+  nombre_invitado      varchar(140)
+  fecha                date          [not null]
+  inicia_en            timestamptz   [not null]
+  termina_en           timestamptz   [not null]
+  estado_id            int           [not null]
+  notas                text
+  creado_en            timestamptz   [not null, default: `now()`]
+  actualizado_en       timestamptz   [not null, default: `now()`]
+  
+
+  indexes {
+    (negocio_id, inicia_en)
+    (personal_id, inicia_en)
+    (usuario_cliente_id)
+  }
+}
+
+Table cancelaciones_cita {
+  id             serial        [pk]
+  cita_id        int           [not null]
+  usuario_id_cancelo int [not null]
+  motivo         varchar(240)
+  cancelado_en   timestamptz   [not null, default: `now()`]
+  creado_en         timestamptz   [not null, default: `now()`]
+  actualizado_en    timestamptz   [not null, default: `now()`]
+}
+
+/* =========================
+   PAGOS, TOKENS y PLUS
+   ========================= */
+Table metodo_pago {
+  id                serial        [pk]
+  nombre            varchar(120)  [not null]
+  creado_en         timestamptz   [not null, default: `now()`]
+  actualizado_en    timestamptz   [not null, default: `now()`]
+}
+
+Table estado_pago {
+  id                serial        [pk]
+  nombre            varchar(120)  [not null]
+  creado_en         timestamptz   [not null, default: `now()`]
+  actualizado_en    timestamptz   [not null, default: `now()`]
+}
+
+Table compras {
+  id            serial        [pk]
+  negocio_id    int           [not null]
+  metodo_id     int           [not null]
+  estado_id     int           [not null]
+  tokens        int
+  monto_cop     numeric(12,2) [not null]
+  ref_externa   varchar(120)
+  creado_en         timestamptz   [not null, default: `now()`]
+  actualizado_en    timestamptz   [not null, default: `now()`]
+}
+
+Table suscripciones_plus {
+  id            serial        [pk]
+  negocio_id    int           [not null]
+  fecha_inicio  date          [not null]
+  fecha_fin     date          [not null]
+  monto_cop     numeric(12,2) [not null]
+  activa        boolean       [not null, default: true]
+  creado_en     timestamptz   [not null, default: `now()`]
+  actualizado_en    timestamptz   [not null, default: `now()`]
+
+  indexes {
+    (negocio_id, activa)
+  }
+}
+
+Table promociones {
+  id serial [pk]
+  nombre varchar(200) [not null]
+  inicia date [not null]
+  termina date [not null]
+  creado_en         timestamptz   [not null, default: `now()`]
+  actualizado_en    timestamptz   [not null, default: `now()`]
+}
+
+
+Table movimientos_tokens {
+  id             serial        [pk]
+  fecha          date          [not null]
+  hora           hour          [not null]
+  negocio_id     int           [not null]
+  credito        int           [not null, default: 0]
+  debito         int           [not null, default: 0]
+  compra_id      int
+  cita_id        int
+  promocion_id   int 
+  cancelacion_id int
+  creado_en      timestamptz   [not null, default: `now()`]
+  actualizado_en    timestamptz   [not null, default: `now()`]
+
+  indexes {
+    (negocio_id, creado_en)
+  }
+}
+
+/* =========================
+   COMENTARIOS / CALIFICACIONES
+   ========================= */
+
+Enum sentimiento {
+  positivo
+  neutro
+  negativo
+}
+
+Table tipo_comentario {
+  id      serial        [pk]
+  nombre  varchar(40)   [not null, unique]
+  creado_en         timestamptz   [not null, default: `now()`]
+  actualizado_en    timestamptz   [not null, default: `now()`]
+}
+
+Table comentarios {
+  id               serial        [pk]
+  tipo_comentario_id int         [not null]          // FK a tipo_comentario
+  negocio_id       int                                   // nullable si es 'pagina'
+  usuario_autor_id int
+  nombre_autor     varchar(140)
+  calificacion     int           [not null]            // 1..5
+  recomienda       boolean       [not null, default: false]
+  texto            text
+  sentimiento      sentimiento
+  visible          boolean       [not null, default: true]
+  creado_en        timestamptz   [not null, default: `now()`]
+  actualizado_en   timestamptz   [not null, default: `now()`]
+
+  indexes {
+    (tipo_comentario_id)
+    (negocio_id)
+    (calificacion)
+    (sentimiento)
+  }
+}
+
+Table estadisticas {
+  id                   serial        [pk]
+
+  alcance              alcance_resumen   [not null]         // pagina | negocio
+  audiencia            audiencia_resumen [not null, default: 'solo_admin']
+
+  negocio_id           int
+
+  periodo_inicio       date          [not null]
+  periodo_fin          date          [not null]
+
+  negocios_activos     int           [not null, default: 0]
+  barberos_activos     int           [not null, default: 0]
+  citas_programadas    int           [not null, default: 0]
+  citas_canceladas     int           [not null, default: 0]
+  prom_citas_7d        numeric(5,2)  [not null, default: 0]
+  tasa_cancelacion     numeric(5,2)  [not null, default: 0]
+
+  tokens_comprados     int           [not null, default: 0]
+  tokens_consumidos    int           [not null, default: 0]
+  tokens_saldo_total   int           [not null, default: 0]
+  suscrip_activas      int           [not null, default: 0]
+  suscrip_nuevas       int           [not null, default: 0]
+
+  comentarios_total    int           [not null, default: 0]
+  calif_promedio       numeric(3,2)  [not null, default: 0]
+  calif_5              int           [not null, default: 0]
+  calif_4              int           [not null, default: 0]
+  calif_3              int           [not null, default: 0]
+  calif_2              int           [not null, default: 0]
+  calif_1              int           [not null, default: 0]
+  recomiendan_si       int           [not null, default: 0]
+  recomiendan_no       int           [not null, default: 0]
+  observaciones        text
+
+  creado_en            timestamptz   [not null, default: `now()`]
+  actualizado_en       timestamptz   [not null, default: `now()`]
+
+  indexes {
+    (alcance, negocio_id, periodo_inicio, periodo_fin) [name: "ix_estadisticas_rango"]
+    (negocio_id)
+  }
+}
+
+/* =========================
+   RELACIONES
+   ========================= */
+Ref: usuarios.rol_id > roles.id
+Ref: personal.negocio_id > negocios.id
+Ref: personal.usuario_id > usuarios.id
+
+Ref: servicios.negocio_id > negocios.id
+
+Ref: personal_servicio.personal_id > personal.id
+Ref: personal_servicio.servicio_id > servicios.id
+
+Ref: dia_horario.dia_id > dias_semana.id
+Ref: conjunto_horario.negocio_id > negocios.id
+Ref: conjunto_horario.creado_por > usuarios.id
+Ref: conjunto_horario.personal_id > personal.id
+Ref: dia_horario.conjunto_horario_id > conjunto_horario.id [delete: cascade]
+Ref: citas.estado_id > estado_cita.id
+
+Ref: citas.negocio_id > negocios.id
+Ref: citas.personal_id > personal.id
+Ref: citas.servicio_id > servicios.id
+Ref: citas.usuario_cliente_id > usuarios.id
+
+Ref: cancelaciones_cita.cita_id > citas.id [delete: cascade]
+Ref: cancelaciones_cita.usuario_id_cancelo > usuarios.id
+
+Ref: compras.negocio_id > negocios.id
+Ref: suscripciones_plus.negocio_id > negocios.id
+
+Ref: movimientos_tokens.negocio_id > negocios.id
+Ref: movimientos_tokens.compra_id > compras.id
+Ref: movimientos_tokens.cita_id > citas.id
+Ref: movimientos_tokens.promocion_id > promociones.id
+Ref: compras.metodo_id > metodo_pago.id
+Ref: compras.estado_id > estado_pago.id
+Ref: movimientos_tokens.cancelacion_id > cancelaciones_cita.id
+
+Ref: estadisticas.negocio_id > negocios.id
+
+Ref: administrador.usuario_id     > usuarios.id
+Ref: administrador.estadisticas_id > estadisticas.id
+Ref: comentarios.tipo_comentario_id > tipo_comentario.id
+Ref: comentarios.negocio_id         > negocios.id
+Ref: comentarios.usuario_autor_id   > usuarios.id
