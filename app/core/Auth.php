@@ -54,11 +54,6 @@ final class Auth
 
         session_regenerate_id(true);
         $_SESSION[self::SESSION_USER_KEY] = (int) $user['id'];
-        if (isset($user['usuario'])) {
-            $_SESSION['usuario'] = $user['usuario'];
-        } else {
-            $_SESSION['usuario'] = (string) ($user['correo'] ?? $user['telefono'] ?? '');
-        }
         CSRF::regenerate();
 
         return true;

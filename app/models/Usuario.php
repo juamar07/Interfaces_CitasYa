@@ -95,12 +95,4 @@ final class Usuario extends BaseModel
             throw new RuntimeException('Error al registrar el cliente: ' . $e->getMessage(), (int) $e->getCode(), $e);
         }
     }
-
-    public static function updatePassword(int $usuarioId, string $hash): void
-    {
-        $stmt = self::db()->prepare('UPDATE usuarios SET hash_contrasena = :hash, actualizado_en = CURRENT_TIMESTAMP WHERE id = :id');
-        $stmt->bindValue(':hash', $hash);
-        $stmt->bindValue(':id', $usuarioId, PDO::PARAM_INT);
-        $stmt->execute();
-    }
 }

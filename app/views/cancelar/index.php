@@ -17,18 +17,18 @@ ob_start();
     .banner-title{justify-self:center;font-weight:700;color:#233247;}
     .back-button{justify-self:start;text-decoration:none;color:#5c6bc0;padding:8px 12px;border:1px solid #5c6bc0;border-radius:6px;}
     .back-button:hover{background:#5c6bc0;color:#fff;}
-    .banner-logo{justify-self=end;display:inline-flex;align-items:center;}
+    .banner-logo{justify-self:end;display:inline-flex;align-items:center;}
     .banner-logo img{width:52px;height:auto;display:block;}
     h1{text-align:center;}
     .legal-outside{margin:18px auto 24px;padding:10px 12px;max-width:calc(800px + 40px + 4px);text-align:center;color:#666;font-size:14px;line-height:1.35;}
 </style>
 <?php
 $styles = ob_get_clean();
-renderHeader('Panel administrador', $styles);
-renderBanner('Panel administrador');
+renderHeader('Cancelar cita', $styles);
+renderBanner('Cancelar cita');
 ?>
 <div class="container">
-    <h1>Panel administrador</h1>
+    <h1>Cancelar cita</h1>
     <p style="text-align:center;">Vista en construcción.</p>
 </div>
 <?php renderLegal(); ?>

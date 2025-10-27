@@ -60,6 +60,5 @@ Migración de las interfaces de CitasYa a PHP 7 + MySQL.
 ## Notas
 
 - Todas las solicitudes POST incluyen protección CSRF.
-- Las contraseñas se almacenan con `password_hash` y existe un flujo de recuperación en `/password/forgot` con tokens de 30 minutos.
-- Configura `CRYPTO_KEY` en `.env` (formato `base64:...`) si necesitas cifrar otros secretos con `App\\Core\\Crypto`.
+- Las contraseñas se almacenan con `password_hash`.
 - Las vistas conservan el estilo original, reutilizando includes comunes para banner, footer y avisos legales.

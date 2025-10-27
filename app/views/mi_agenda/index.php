@@ -24,11 +24,11 @@ ob_start();
 </style>
 <?php
 $styles = ob_get_clean();
-renderHeader('Panel administrador', $styles);
-renderBanner('Panel administrador');
+renderHeader('Mi agenda', $styles);
+renderBanner('Mi agenda');
 ?>
 <div class="container">
-    <h1>Panel administrador</h1>
+    <h1>Mi agenda</h1>
     <p style="text-align:center;">Vista en construcción.</p>
 </div>
 <?php renderLegal(); ?>

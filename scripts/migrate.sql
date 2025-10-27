@@ -331,17 +331,4 @@ CREATE TABLE administrador (
     CONSTRAINT fk_admin_estadistica FOREIGN KEY (estadisticas_id) REFERENCES estadisticas(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE password_resets (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    usuario_id BIGINT UNSIGNED NOT NULL,
-    selector CHAR(16) NOT NULL,
-    token_hash VARBINARY(64) NOT NULL,
-    expira_en TIMESTAMP NOT NULL,
-    usado TINYINT(1) NOT NULL DEFAULT 0,
-    creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_password_resets_usuario (usuario_id),
-    UNIQUE KEY uk_password_resets_selector (selector),
-    CONSTRAINT fk_password_resets_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 SET foreign_key_checks = 1;
