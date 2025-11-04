@@ -1,20 +1,18 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Registro de Cliente</title>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+import { AuthController } from '../../controllers/AuthController.js';
+import { bindForm } from '../../utils/forms.js';
+import { navigate } from '../../router/index.js';
+
+export default async function RegisterClienteView(){
+  return `
   <style>
     :root{
       --container-w: 800px;
       --container-pad: 20px;
       --container-bl: 4px;
-
       --banner-h: 64px;
       --page-sidepad: 16px;
       --banner-bg: #e6e9ee;
       --banner-bg-hover: #d7dbe3;
-
       --c-primary:#5c6bc0;
       --c-primary-d:#3f51b5;
       --c-green:#66BB6A;
@@ -58,8 +56,8 @@
     }
     .business-cta a:hover{ background:var(--c-primary); color:#fff; }
     p{ text-align:center; font-size:16px; color: #003366; font-weight:400; }
-    p a{ color:var(--c-primary); text-decoration:none; } p a:hover{ text-decoration:underline; }
-
+    p a{ color:var(--c-primary); text-decoration:none; }
+    p a:hover{ text-decoration:underline; }
     .app-banner{
       position:fixed; top:0; left:0; right:0; height:var(--banner-h); z-index:9999; background:transparent;
     }
@@ -94,140 +92,56 @@
       .btn-slim{ width:100%; }
     }
   </style>
-</head>
-<body>
-  <!-- Banner -->
   <header class="app-banner" role="banner">
     <div class="banner-box">
       <div class="banner-inner">
-        <a href="#" class="back-button banner-back" onclick="history.back(); return false;">&larr; Volver</a>
+        <a href="#" class="back-button banner-back" data-action="back">&larr; Volver</a>
         <div class="banner-title">Registro de Cliente</div>
-        <a href="interfaz_inicio_s.html" class="banner-logo" aria-label="Ir al inicio">
-          <img src="LogoCitasYa.png" alt="Citas Ya">
+        <a href="#/" class="banner-logo" aria-label="Ir al inicio">
+          <img src="/assets/img/LogoCitasYa.png" alt="Citas Ya">
         </a>
       </div>
     </div>
   </header>
-
   <div class="container">
     <h1>Registro de Cliente</h1>
-
     <form id="registroForm" novalidate>
       <label for="nombre">Nombre Completo</label>
-      <input type="text" id="nombre" autocomplete="name" required>
-      <div id="errNombre" class="error">Ingresa tu nombre (mínimo 2 caracteres).</div>
-
+      <input type="text" id="nombre" name="full_name" autocomplete="name" required>
       <label for="correo">Correo</label>
-      <input type="email" id="correo" autocomplete="email" required>
+      <input type="email" id="correo" name="email" autocomplete="email" required>
       <div class="hint">Ej: nombre@dominio.com</div>
-      <div id="errCorreo" class="error">Ingresa un correo válido que no esté registrado.</div>
-
       <label for="numero">Número</label>
-      <input type="tel" id="numero" autocomplete="tel" required>
+      <input type="tel" id="numero" name="phone" autocomplete="tel">
       <div class="hint">Solo dígitos, 7 a 15 caracteres.</div>
-      <div id="errNumero" class="error">Ingresa un número válido que no esté registrado.</div>
-
       <label for="usuario">Usuario</label>
-      <input type="text" id="usuario" autocomplete="username" required>
+      <input type="text" id="usuario" name="username" autocomplete="username">
       <div class="hint">3–20 caracteres. Letras, números, punto, guion o guion bajo.</div>
-      <div id="errUsuario" class="error">El usuario no es válido o ya existe.</div>
-
       <label for="contrasena">Contraseña</label>
-      <input type="password" id="contrasena" autocomplete="new-password" required>
+      <input type="password" id="contrasena" name="password" autocomplete="new-password" required>
       <div class="hint">Mínimo 6 caracteres.</div>
-      <div id="errPass" class="error">La contraseña es muy corta.</div>
-
       <button type="submit" class="btn-registrar btn-slim">Registrar como Cliente</button>
     </form>
-
     <div class="business-cta" aria-label="Registro de negocio">
       <span>¿Eres barbero o tienes una barbería?</span><br>
-      <a href="interfaz_registrar_negocio.html">Registrar mi negocio</a>
+      <a href="#/barbero/registrar-negocio">Registrar mi negocio</a>
     </div>
-
-    <p>¿Ya tienes cuenta? <a href="interfaz_login.html">Inicia sesión</a></p>
+    <p>¿Ya tienes cuenta? <a href="#/login">Inicia sesión</a></p>
   </div>
-
   <div class="legal-outside">
     Todos los derechos reservados © 2025<br>
     Citas Ya S.A.S - Nit 810.000.000-0
-  </div>
+  </div>`;
+}
 
-  <script>
-    /* ====== Almacenamiento y retorno ====== */
-    const LS_USERS = 'cy_users';
-    const LS_SESS  = 'cy_session';
-    const SS_RETURN= 'cy_return_to';
-
-    const loadUsers = () => { try { return JSON.parse(localStorage.getItem(LS_USERS)) || []; } catch (_) { return []; } };
-    const saveUsers = (arr) => localStorage.setItem(LS_USERS, JSON.stringify(arr));
-    const saveSession = (user) => localStorage.setItem(LS_SESS, JSON.stringify({ user }));
-
-    // Normalizadores
-    const normEmail = s => (s||'').trim().toLowerCase();
-    const normUser  = s => (s||'').trim().toLowerCase();
-    const normPhone = s => (s||'').replace(/\D+/g, '');
-
-    // Validadores
-    const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(v);
-    const isUser  = v => /^[a-zA-Z0-9._-]{3,20}$/.test(v);
-    const isPhone = v => /^\d{7,15}$/.test(v);
-    const isPass  = v => (v||'').length >= 6;
-
-    // UI helpers
-    const $ = s => document.querySelector(s);
-    const show = id => document.getElementById(id).style.display = 'block';
-    const hide = id => document.getElementById(id).style.display = 'none';
-
-    document.getElementById('registroForm').addEventListener('submit', (e)=>{
-      e.preventDefault();
-
-      const nombre  = $('#nombre').value.trim();
-      const correo  = normEmail($('#correo').value);
-      const numero  = normPhone($('#numero').value);
-      const usuario = normUser($('#usuario').value);
-      const pass    = $('#contrasena').value;
-
-      let valid = true;
-      if(!nombre || nombre.length < 2){ show('errNombre'); valid=false; } else hide('errNombre');
-      if(!isEmail(correo)){ show('errCorreo'); valid=false; } else hide('errCorreo');
-      if(!isPhone(numero)){ show('errNumero'); valid=false; } else hide('errNumero');
-      if(!isUser(usuario)){ show('errUsuario'); valid=false; } else hide('errUsuario');
-      if(!isPass(pass)){ show('errPass'); valid=false; } else hide('errPass');
-
-      if(!valid) return;
-
-      const users = loadUsers();
-      const dupMail  = users.some(u => (u.email||'') === correo);
-      const dupUser  = users.some(u => (u.username||'') === usuario);
-      const dupPhone = users.some(u => (u.phone||'') === numero);
-
-      if(dupMail){ show('errCorreo'); return; } else hide('errCorreo');
-      if(dupUser){ show('errUsuario'); return; } else hide('errUsuario');
-      if(dupPhone){ show('errNumero'); return; } else hide('errNumero');
-
-      const newUser = {
-        id: 'u-' + Date.now(),
-        name: nombre,
-        email: correo,
-        phone: numero,
-        username: usuario,
-        password: pass,          // Solo para demo/front-end
-        role: 'cliente',
-        createdAt: new Date().toISOString()
-      };
-      users.push(newUser);
-      saveUsers(users);
-
-      // Crear sesión y redirigir a donde venía (si aplica)
-      saveSession(newUser);
-      const goBack = sessionStorage.getItem(SS_RETURN);
-      if(goBack){
-        window.location.href = goBack;
-      }else{
-        window.location.href = 'interfaz_agendar.html';
-      }
+export function onMount(){
+  const backBtn = document.querySelector('[data-action="back"]');
+  backBtn?.addEventListener('click', (ev) => { ev.preventDefault(); history.back(); });
+  const form = document.getElementById('registroForm');
+  if (form){
+    bindForm(form, async (payload) => {
+      await AuthController.registerCliente(payload);
+      navigate('/login');
     });
-  </script>
-</body>
-</html>
+  }
+}
