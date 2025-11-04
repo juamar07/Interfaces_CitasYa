@@ -1,9 +1,9 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Iniciar sesión</title>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+import { AuthController } from '../../controllers/AuthController.js';
+import { bindForm } from '../../utils/forms.js';
+import { navigate } from '../../router/index.js';
+
+export default async function LoginView(){
+  return `
   <style>
     :root{
       --container-w: 800px;
@@ -34,7 +34,6 @@
     input:focus{ outline:none; border-color:#7da2a9; }
     .hint{ color:#666; margin-top:-12px; margin-bottom:16px; font-size:13px; }
     .error{ color:#b00020; font-size:13px; margin-top:-12px; margin-bottom:16px; display:none; }
-
     button{
       display:block; width:100%; margin:10px 0; border:none; padding:15px 20px; border-radius:5px;
       cursor:pointer; font-weight:600; transition: background-color .3s, transform .3s; color:#fff; font-size:16px;
@@ -42,7 +41,6 @@
     .btn-blue{ background:var(--btn-blue); }
     .btn-blue:hover{ background:var(--btn-blue-hover); transform: translateY(-2px); }
     .btn-slim{ width:min(640px,75%); margin-left:auto; margin-right:auto; }
-
     .app-banner{
       position:fixed; top:0; left:0; right:0; height:var(--banner-h); z-index:9999; background:transparent;
     }
@@ -64,7 +62,6 @@
       padding:8px 12px; border:1px solid var(--btn-blue); border-radius:6px; transition: background-color .2s, color .2s;
     }
     .back-button:hover{ background:var(--btn-blue); color:#fff; }
-
     .legal-outside{
       margin:18px auto 24px; padding:10px 12px;
       max-width: calc(var(--container-w) + var(--container-pad)*2 + var(--container-bl));
@@ -77,111 +74,45 @@
       .btn-slim{ width:100%; }
     }
   </style>
-</head>
-<body>
-  <!-- Banner -->
   <header class="app-banner" role="banner">
     <div class="banner-box">
       <div class="banner-inner">
-        <a href="#" class="back-button banner-back" onclick="history.back(); return false;">&larr; Volver</a>
+        <a href="#" class="back-button banner-back" data-action="back">&larr; Volver</a>
         <div class="banner-title">Iniciar sesión</div>
-        <a href="interfaz_inicio_s.html" class="banner-logo" aria-label="Ir al inicio">
-          <img src="LogoCitasYa.png" alt="Citas Ya">
+        <a href="#/" class="banner-logo" aria-label="Ir al inicio">
+          <img src="/assets/img/LogoCitasYa.png" alt="Citas Ya">
         </a>
       </div>
     </div>
   </header>
-
   <div class="container">
     <h1>Iniciar sesión</h1>
-
     <form id="loginForm" novalidate>
-      <label for="ident">Correo, usuario o número</label>
-      <input id="ident" type="text" autocomplete="username" required>
-      <div class="hint">Puedes usar cualquiera de tus datos registrados.</div>
-      <div id="errIdent" class="error">Ingresa un dato válido.</div>
-
+      <label for="ident">Correo electrónico</label>
+      <input id="ident" name="email" type="email" autocomplete="username" required>
+      <div class="hint">Ingresa el correo asociado a tu cuenta.</div>
       <label for="pass">Contraseña</label>
-      <input id="pass" type="password" autocomplete="current-password" required>
-      <div id="errPass" class="error">Ingresa tu contraseña.</div>
-
+      <input id="pass" name="password" type="password" autocomplete="current-password" required>
       <button type="submit" class="btn-blue btn-slim">Iniciar Sesión</button>
     </form>
-
     <p style="text-align:center; color:#003366;">
-      ¿No tienes cuenta? <a href="interfaz_registro_cliente.html">Regístrate</a>
+      ¿No tienes cuenta? <a href="#/registro">Regístrate</a>
     </p>
   </div>
-
   <div class="legal-outside">
     Todos los derechos reservados © 2025<br>
     Citas Ya S.A.S - Nit 810.000.000-0
-  </div>
+  </div>`;
+}
 
-  <script>
-    // ======= Almacenamiento =======
-    const LS_USERS = 'cy_users';
-    const LS_CURRENT = 'cy_current_user';
-
-    const loadUsers = () => {
-      try { return JSON.parse(localStorage.getItem(LS_USERS)) || []; }
-      catch (_) { return []; }
-    };
-    const saveCurrent = (u) => localStorage.setItem(LS_CURRENT, JSON.stringify(u));
-
-    // Normalizadores
-    const normEmail = s => (s||'').trim().toLowerCase();
-    const normUser  = s => (s||'').trim().toLowerCase();
-    const normPhone = s => (s||'').replace(/\D+/g, '');
-
-    // Detección de tipo
-    const detectType = v => {
-      const s = v.trim();
-      if(!s) return 'none';
-      if(s.includes('@')) return 'email';
-      if(/^\d{7,15}$/.test(s.replace(/\D+/g,''))) return 'phone';
-      return 'user';
-    };
-
-    const $ = s => document.querySelector(s);
-    const show = (id, on=true)=>{ const el=document.getElementById(id); if(el) el.style.display = on?'block':'none'; };
-
-    document.getElementById('loginForm').addEventListener('submit', (e)=>{
-      e.preventDefault();
-      const identRaw = $('#ident').value || '';
-      const pass = $('#pass').value || '';
-
-      let ok = true;
-      if(!identRaw.trim()){ show('errIdent', true); ok=false; } else show('errIdent', false);
-      if(!pass){ show('errPass', true); ok=false; } else show('errPass', false);
-      if(!ok) return;
-
-      const users = loadUsers();
-      const kind = detectType(identRaw);
-      let user = null;
-
-      if(kind === 'email'){
-        const email = normEmail(identRaw);
-        user = users.find(u => u.email === email);
-      }else if(kind === 'phone'){
-        const phone = normPhone(identRaw);
-        user = users.find(u => u.phone === phone);
-      }else{ // username
-        const username = normUser(identRaw);
-        user = users.find(u => u.username === username);
-      }
-
-      if(!user || user.password !== pass){
-        alert('Credenciales inválidas. Verifica tus datos.');
-        return;
-      }
-
-      // Guardar sesión sencilla (solo demo/front-end)
-      saveCurrent({ id:user.id, name:user.name, username:user.username, email:user.email, phone:user.phone, loggedAt: Date.now() });
-
-      // Redirigir a la experiencia de cliente (agendar)
-      window.location.href = 'interfaz_agendar.html';
+export function onMount(){
+  const backBtn = document.querySelector('[data-action="back"]');
+  backBtn?.addEventListener('click', (ev) => { ev.preventDefault(); history.back(); });
+  const form = document.getElementById('loginForm');
+  if (form){
+    bindForm(form, async (payload) => {
+      await AuthController.login(payload);
+      navigate('/');
     });
-  </script>
-</body>
-</html>
+  }
+}
